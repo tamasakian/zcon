@@ -1,0 +1,34 @@
+## ignore all
+*
+
+## do not ignore files
+!/README.md
+!/.gitignore
+
+## do not ignore dirs, but ignore files
+!/data/
+!/data/**/.gitkeep
+
+!/doc/
+!/doc/**/.gitkeep
+
+!/download/
+!/download/**/.gitkeep
+
+!/script/
+!/script/**/.gitkeep
+
+!/taskfile/
+!/taskfile/**/.gitkeep
+
+## do not ignore files in dirs
+!/job/
+!/job/profile.sh
+
+!/lib/
+!/lib/blast.sh
+!/lib/function.sh
+!/lib/datasets.sh
+!/lib/mcscan.sh
+!/lib/meme.sh
+!/lib/mummer.sh
