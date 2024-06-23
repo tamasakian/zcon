@@ -2,6 +2,39 @@
 
 #### Function libs with BLAST
 
+function makeblastdb_genome_by_genus() {
+    ## This function is depend on fetch_genome_by_genus, datasets.sh
+    function usage() {
+        cat <<EOS
+Usage:  makeblastdb_genome_by_genus <arg1>
+
+    arg1: genus
+
+EOS
+        exit 1
+    }
+    function makeblastdb_genome() {
+        for org in ${org_li[*]}; do
+            makeblastdb \
+                -in "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+                -dbtype nucl -hash_index -parse_seqids
+            makeblastdb \
+                -in "${DATA}/${genus}/${org}.cds.all.fasta" \
+                -dbtype nucl -hash_index -parse_seqids
+            makeblastdb \
+                -in "${DATA}/${genus}/${org}.pep.all.fasta" \
+                -dbtype prot -hash_index -parse_seqids
+        done
+    }
+
+    function main() {
+        fetch_genome_by_genus "$@"
+        makeblastdb_genome
+    }
+
+    main "$@"
+}
+
 function output_blastp_genus_symbol() {
     function usage() {
         cat <<EOS
@@ -52,6 +85,87 @@ EOS
         make_dir
         redeclare_genome_by_genus "$genus"
         blastp_genus_symbol
+    }
+
+    main "$@"
+}
+
+function construct_pep_blastp_genus_symbol() {
+    function usage() {
+        cat <<EOS
+Usage:  construct_pep_blastp_genus_symbol <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
+
+    arg1: genus
+    arg2: symbol
+    arg3: symbol_org
+    arg4: pid
+    arg5: pnm
+    ...
+
+EOS
+        exit 1
+    } 
+
+    function parse_args() {
+        if [[ $# -lt 6 ]]; then
+            usage
+        fi
+        genus="$1"
+        symbol="$2"
+        symbol_org="${3/ /_}"
+        evalue=$4
+        local _pli=("${@:5}")
+        for ((i=0; i<${#_pli[@]}; i+=2)); do
+            pid_li+=("${_pli[i]}")
+            pnm_li+=("${_pli[i+1]}")
+        done
+    }
+
+    function make_dir() {
+        taskdir=$(make_dir_by_date $TASKFILE)
+        echo "taskdir: ${taskdir}"
+    }
+
+    function retrieve_blastp() {
+        > "${taskdir}/${genus}.${symbol}.pep.fasta"
+        echo "Protein BLAST"
+        for org in ${org_li[*]}; do
+            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
+            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            if [ -z "$_ids" ]; then
+                echo "No hit."
+                continue
+            fi
+            echo "Hit."; echo "$_ids"
+            for _id in $_ids; do
+                for ((i=0; i<${#pid_li[@]}; ++i)); do
+                    if [[ "$_id" != "${pid_li[i]}" ]]; then
+                        continue
+                    fi
+                    tmpfile=$(mktemp)
+                    blastdbcmd \
+                        -entry "$_id" \
+                        -db "${DATA}/${genus}/${org}.pep.all.fasta" \
+                        -out "$tmpfile"
+                    $PYTHON3 -m biotp rename_header \
+                        "$tmpfile" \
+                        "$tmpfile" \
+                        "${pnm_li[i]}" \
+                        "" \
+                        ""
+                    cat "$tmpfile" >> "${taskdir}/${genus}.${symbol}.pep.fasta"
+                    rm "$tmpfile"
+                done
+            done
+        done
+    }
+
+    function main() {
+        parse_args "$@"
+        redeclare_genome_by_genus "$genus"
+        make_dir
+        retrieve_blastp
     }
 
     main "$@"
