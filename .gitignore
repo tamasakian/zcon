@@ -24,6 +24,7 @@
 ## do not ignore files in dirs
 !/job/
 !/job/profile.sh
+!/job/example.sh
 
 !/lib/
 !/lib/blast.sh
