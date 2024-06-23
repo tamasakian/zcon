@@ -66,27 +66,12 @@ EOS
         done
     }
 
-    function makeblastdb_genome() {
-        for org in ${org_li[*]}; do
-            makeblastdb \
-                -in "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
-                -dbtype nucl -hash_index -parse_seqids
-            makeblastdb \
-                -in "${DATA}/${genus}/${org}.cds.all.fasta" \
-                -dbtype nucl -hash_index -parse_seqids
-            makeblastdb \
-                -in "${DATA}/${genus}/${org}.pep.all.fasta" \
-                -dbtype prot -hash_index -parse_seqids
-        done
-    }
-
     function main() {
         parse_args "$@"
         make_dir
         download_genome_by_genus
         declare_genome_by_genus
         send_genome_to_data
-        makeblastdb_genome
     }
 
     main "$@"
