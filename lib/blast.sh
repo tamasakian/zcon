@@ -13,6 +13,7 @@ Usage:  makeblastdb_genome_by_genus <arg1>
 EOS
         exit 1
     }
+    
     function makeblastdb_genome() {
         for org in ${org_li[*]}; do
             makeblastdb \
