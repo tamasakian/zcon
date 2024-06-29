@@ -3,7 +3,7 @@
 #### ZCON Profile
 
 function declare_dir() {
-    readonly ROOT=/Users/tamasaki/zcon
+    readonly ROOT=${HOME}/zcon
     readonly DATA=${ROOT}/data
     readonly DOC=${ROOT}/doc
     readonly DOWNLOAD=${ROOT}/download
