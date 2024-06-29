@@ -150,6 +150,78 @@ EOS
     main "$@"
 }
 
+function search_one_to_three_synteny() {
+    function usage() {
+        cat <<EOS
+Usage:  search_one_to_three_synteny <arg1> <arg2> <arg3> <arg4>
+
+    arg1: genus
+    arg2: ref
+    arg3: qry
+    arg4: feature
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 4 ]]; then
+            usage
+        fi
+        genus="$1"
+        ref="$2"
+        qry="$3"
+        feat=$4
+        ref_us=${ref/ /_}
+        qry_us=${qry/ /_}
+    }
+
+    function make_dir() {
+        taskdir=$(make_dir_by_date $TASKFILE)
+        echo "taskdir: ${taskdir}"
+    }
+
+    function to_bed() {
+        cd $taskdir
+        for org in "$ref" "$qry"; do
+            org_us=${org/ /_}
+            echo "${org_us}.genome.gff -> ${org_us}.bed"
+            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
+        done
+        cd $ROOT
+    }
+    
+    function to_cds() {
+        cd $taskdir
+        for org in "$ref" "$qry"; do
+            org_us=${org/ /_}
+            echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
+            $PYTHON3 -m biotp rename_headers_to_features \
+                "${DATA}/${genus}/${org_us}.cds.all.fasta" \
+                "${taskdir}/${org_us}.cds.${feat}.fasta" \
+                "$feat" 
+            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
+        done
+        cd $ROOT
+    }
+
+    function search_microsynteny() {
+        cd $taskdir
+        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=3 -o "${ref_us}.${qry_us}.i3.blocks"
+        cd $ROOT
+    }
+
+    function main() {
+        parse_args "$@"
+        make_dir
+        to_bed
+        to_cds
+        search_microsynteny
+    }
+    main "$@"
+}
+
 function search_longest_one_to_two_microsynteny() {
     function usage() {
         cat <<EOS
@@ -174,6 +246,36 @@ EOS
 
     function main() {
         search_one_to_two_synteny "$@"
+        output_longest_microsynteny
+    }
+
+    main "$@"
+}
+
+function search_longest_one_to_three_microsynteny() {
+    function usage() {
+        cat <<EOS
+Usage:  search_longest_one_to_three_microsynteny <arg1> <arg2> <arg3> <arg4>
+
+    arg1: genus
+    arg2: ref
+    arg3: qry
+    arg4: feat
+
+EOS
+        exit 1
+    }
+
+    function output_longest_microsynteny() {
+        $PYTHON3 -m biotp output_longest_one_to_three_microsynteny \
+            "${taskdir}/${ref_us}.bed" \
+            "${taskdir}/${qry_us}.bed" \
+            "${taskdir}/${ref_us}.${qry_us}.i3.blocks" \
+            "${taskdir}/longest_microsynteny.csv"
+    }
+
+    function main() {
+        search_one_to_three_synteny "$@"
         output_longest_microsynteny
     }
 
