@@ -470,6 +470,104 @@ EOS
     main "$@"
 }
 
+function visualize_one_to_three_microsynteny() {
+    function usage() {
+        cat <<EOS
+Usage:  visualize_one_to_three_microsynteny <arg1> <arg2> <arg3> <arg4> (<arg5> ...)
+
+
+    arg1: genus
+    arg2: ref
+    arg3: qry
+    arg4: feature
+    arg5: seqid
+    ...
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 6 ]]; then
+            usage
+        fi
+        genus="$1"
+        ref="$2"
+        qry="$3"
+        feat=$4
+        seq_li=("${@:5}")
+    }
+
+    function make_dir() {
+        taskdir=$(make_dir_by_date $TASKFILE)
+        echo "taskdir: ${taskdir}"
+    }
+
+    function to_bed() {
+        cd $taskdir
+        for org in "$ref" "$qry"; do
+            org_us=${org/ /_}
+            echo "${org_us}.genome.gff -> ${org_us}.bed"
+            $PYTHON3 -m biotp slice_lines_by_seqids \
+                "${DATA}/${genus}/${org_us}.genome.gff" \
+                "${taskdir}/${org_us}.genome.sliced.gff" \
+                "${seq_li[@]}"
+            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+        done
+        cd $ROOT
+    }
+    
+    function to_cds() {
+        cd $taskdir
+        for org in "$ref" "$qry"; do
+            org_us=${org/ /_}
+            echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
+            $PYTHON3 -m biotp slice_headers_by_ids \
+                "${DATA}/${genus}/${org_us}.cds.all.fasta" \
+                "${taskdir}/${org_us}.cds.sliced.fasta" \
+                "${seq_li[@]}"
+            $PYTHON3 -m biotp rename_headers_to_features \
+                "${taskdir}/${org_us}.cds.sliced.fasta" \
+                "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
+                "$feat" 
+            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+        done
+        cd $ROOT
+    }
+
+    function search_microsynteny() {
+        cd $taskdir
+        ref_us=${ref/ /_}
+        qry_us=${qry/ /_}
+        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=3 -o "${ref_us}.${qry_us}.i3.blocks"
+        > "blocks"
+        cat "${ref_us}.${qry_us}.i3.blocks" > "blocks"
+        > "blocks.layout"
+        echo "# x, y, rotation, ha, va, color, ratio, label" >> "blocks.layout"
+        echo "0.5, 0.6, 0, center, top, #009E73, 1, ${seq_li[0]}" >> "blocks.layout"
+        echo "0.1, 0.4, 0, center, bottom, #E69F00, .3, ${seq_li[1]}" >> "blocks.layout"
+        echo "0.4, 0.4, 0, center, bottom, #56B4E9, .3, ${seq_li[2]}" >> "blocks.layout"
+        echo "0.7, 0.4, 0, center, bottom, #CC79A7, .3, ${seq_li[3]}" >> "blocks.layout"
+        echo "# edges" >> "blocks.layout"
+        echo "e, 0, 1" >> "blocks.layout"
+        echo "e, 0, 2" >> "blocks.layout"
+        echo "e, 0, 3" >> "blocks.layout"
+        $PYTHON3 -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
+        $PYTHON3 -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
+        cd $ROOT
+    }
+
+    function main() {
+        parse_args "$@"
+        make_dir
+        to_bed
+        to_cds
+        search_microsynteny
+    }
+    main "$@"
+}
+
 function make_mltree_one_to_one_microsynteny() {
     function usage() {
         cat <<EOS
