@@ -30,6 +30,9 @@
 !/lib/blast.sh
 !/lib/function.sh
 !/lib/datasets.sh
+!/lib/mafft.sh
 !/lib/mcscan.sh
 !/lib/meme.sh
 !/lib/mummer.sh
+!/lib/raxml.sh
+!/lib/trimal.sh
