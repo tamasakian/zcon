@@ -258,7 +258,7 @@ EOS
     }
 
     function make_tree() {
-        Rscript ${SRC}/make_tree.R  \
+        Rscript ${SCRIPT}/make_tree.R  \
             "${taskdir}/${genus}.${symbol}.pep.aln.raxml.support" \
             "${taskdir}/${genus}.${symbol}.pep.aln.raxml.support.png"
     }
@@ -403,7 +403,7 @@ EOS
     }
 
     function make_tree() {
-        Rscript ${SRC}/make_tree.R  \
+        Rscript ${SCRIPT}/make_tree.R  \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support" \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support.png"
     }
@@ -590,7 +590,7 @@ EOS
     }
 
     function make_tree() {
-        Rscript ${SRC}/make_tree.R  \
+        Rscript ${SCRIPT}/make_tree.R  \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support" \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support.png"
     }
@@ -812,13 +812,13 @@ EOS
             --msa "${taskdir}/${cons_genus}.${symbol}.pep.aln" \
             --all \
             --model Blosum62 \
-            --bs-trees 1000 \
+            --bs-trees 2000 \
             --threads 8 \
             --redo
     }
 
     function make_tree() {
-        Rscript ${SRC}/make_tree.R  \
+        Rscript ${SCRIPT}/make_tree.R  \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support" \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support.png"
     }
@@ -997,7 +997,7 @@ EOS
     }
 
     function make_tree() {
-        Rscript ${SRC}/make_tree.R  \
+        Rscript ${SCRIPT}/make_tree.R  \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support" \
             "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support.png"
     }
@@ -1109,7 +1109,7 @@ EOS
     }
 
     function make_tree() {
-        Rscript ${SRC}/make_tree.R  \
+        Rscript ${SCRIPT}/make_tree.R  \
             "${taskdir}/${genus}.${symbol}.pep.sth.nwk" \
             "${taskdir}/${genus}.${symbol}.pep.sth.png"
     }
