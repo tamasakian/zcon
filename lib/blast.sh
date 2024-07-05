@@ -172,6 +172,147 @@ EOS
     main "$@"
 }
 
+function addn_construct_pep_blastp_genus_symbol() {
+    function usage() {
+        cat <<EOS
+Usage:  addn_construct_pep_blastp_genus_symbol <arg1> <arg2> (<arg3> <arg4> <arg5> ...) <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
+
+    arg1: cons_genus
+    arg2: num [number of add_genus]
+    arg3: add1_genus
+    arg4: add2_genus
+    arg5: add3_genus
+    ...
+    arg1: symbol
+    arg2: symbol_org
+    arg3: evalue
+    arg4: pid
+    arg5: pnm
+    ...
+
+EOS
+        exit 1
+    } 
+
+    function parse_args() {
+        if [[ $# -lt 9 ]]; then
+            usage
+        fi
+        cons_genus="$1"
+        num=$2
+
+        addn_genus=()
+        for ((i=0; i<num; i++)); do
+            addn_genus[i]="${@:3+i:1}"
+        done
+
+        symbol="${@:3+num:1}"
+        symbol_org="${@:4+num:1}"
+        symbol_org=${symbol_org/ /_}
+        evalue="${@:5+num:1}"
+
+        local _pli=("${@:6+num}")
+        pid_li=()
+        pnm_li=()
+        for ((i=0; i<${#_pli[@]}; i+=2)); do
+            pid_li+=("${_pli[i]}")
+            pnm_li+=("${_pli[i+1]}")
+        done
+    }
+
+    function make_dir() {
+        taskdir=$(make_dir_by_date $TASKFILE)
+        echo "taskdir: ${taskdir}"
+    }
+
+    function retrieve_blastp_genus_symbol() {
+        > "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
+        echo "Protein BLAST"
+        for org in ${org_li[*]}; do
+            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
+            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
+            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            if [ -z "$_ids" ]; then
+                echo "No hit."
+                continue
+            fi
+            echo "Hit."; echo "$_ids"
+            for _id in $_ids; do
+                for ((i=0; i<${#pid_li[@]}; ++i)); do
+                    if [[ "$_id" != "${pid_li[i]}" ]]; then
+                        continue
+                    fi
+                    tmpfile=$(mktemp)
+                    blastdbcmd \
+                        -entry "$_id" \
+                        -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
+                        -out "$tmpfile"
+                    $PYTHON3 -m biotp rename_header \
+                        "$tmpfile" \
+                        "$tmpfile" \
+                        "${pnm_li[i]}" \
+                        "" \
+                        ""
+                    cat "$tmpfile" >> "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
+                    rm "$tmpfile"
+                done
+            done
+        done
+    }
+
+    function unset_genome_by_genus() {
+        unset -v acc_li org_li asm_li
+    }
+
+    function addn_genus_symbol() {
+        for add_genus in ${addn_genus[*]}; do
+            unset_genome_by_genus
+            redeclare_genome_by_genus "$add_genus"
+            echo "Protein BLAST with ${add_genus}"
+            for org in ${org_li[*]}; do
+                echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
+                local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${add_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
+                local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+                if [ -z "$_ids" ]; then
+                    echo "No hit."
+                    continue
+                fi
+                echo "Hit."; echo "$_ids"
+                for _id in $_ids; do
+                    for ((i=0; i<${#pid_li[@]}; ++i)); do
+                        if [[ "$_id" != "${pid_li[i]}" ]]; then
+                            continue
+                        fi
+                        tmpfile=$(mktemp)
+                        blastdbcmd \
+                            -entry "$_id" \
+                            -db "${DATA}/${add_genus}/${org}.pep.all.fasta" \
+                            -out "$tmpfile"
+                        $PYTHON3 -m biotp rename_header \
+                            "$tmpfile" \
+                            "$tmpfile" \
+                            "${pnm_li[i]}" \
+                            "" \
+                            ""
+                        cat "$tmpfile" >> "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
+                        rm "$tmpfile"
+                    done
+                done
+            done
+        done
+    }
+
+    function main() {
+        parse_args "$@"
+        redeclare_genome_by_genus "$cons_genus"
+        make_dir
+        retrieve_blastp_genus_symbol
+        addn_genus_symbol
+    }
+
+    main "$@"    
+}
+
 function make_mltree_genus_symbol() {
     function usage() {
         cat <<EOS
@@ -1389,5 +1530,4 @@ EOS
         done
     }
 }
-
 
