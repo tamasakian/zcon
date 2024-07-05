@@ -1,6 +1,6 @@
 # zcon
 
-ZCON: A Zsh-driven Multifunctional Toolkit for Genomics Analysis.
+ZCON: A Zsh-driven Multifunctional Library for Genomics Analysis.
 
 ## Dependencies
 
