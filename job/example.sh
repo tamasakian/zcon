@@ -5,7 +5,7 @@
 source $(dirname "$0")/profile.sh
 
 ## Library
-function import_lib() {
+function import_libs() {
     source ${LIB}/function.sh
     source ${LIB}/datasets.sh
     source ${LIB}/blast.sh
@@ -22,7 +22,7 @@ function job_19221111() {
 
 ## Run
 function main() {
-    import_lib
+    import_libs
     job_19221111
 }
 
