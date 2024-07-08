@@ -46,3 +46,8 @@ PythonPackages
     ├── .gitignore
     └── README.md
 ```
+
+## Usage
+```
+zsh job/example.zsh
+```
