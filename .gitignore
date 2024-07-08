@@ -23,16 +23,16 @@
 
 ## do not ignore files in dirs
 !/job/
-!/job/profile.sh
-!/job/example.sh
+!/job/profile.zsh
+!/job/example.zsh
 
 !/lib/
-!/lib/blast.sh
-!/lib/function.sh
-!/lib/datasets.sh
-!/lib/mafft.sh
-!/lib/mcscan.sh
-!/lib/meme.sh
-!/lib/mummer.sh
-!/lib/raxml.sh
-!/lib/trimal.sh
+!/lib/blast.zsh
+!/lib/function.zsh
+!/lib/datasets.zsh
+!/lib/mafft.zsh
+!/lib/mcscan.zsh
+!/lib/meme.zsh
+!/lib/mummer.zsh
+!/lib/raxml.zsh
+!/lib/trimal.zsh
