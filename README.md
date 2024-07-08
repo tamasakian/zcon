@@ -35,11 +35,11 @@ PythonPackages
     ├── lib/
     │   └── hoge.zsh 
     ├── script/
-        ├── data/
-        │   └── input_files
-        ├── doc/
-        │   └── output_files
-        └── hoge.R
+    │   ├── data/
+    │   │   └── input_files
+    │   ├── doc/
+    │   │   └── output_files
+    │   └── hoge.R
     ├── taskfile/
     │   └── output_files
     ├── venv/
