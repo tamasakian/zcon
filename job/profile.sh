@@ -20,4 +20,4 @@ for _dir in ${_dirs[*]}; do
     mkdir -p "$_dir"
 done
 
-alias pyvenv='source ${ROOT}/venv/bin/activate && ${ROOT}/venv/bin/python3'
+alias pyvenv='. ${ROOT}/venv/bin/activate && ${ROOT}/venv/bin/python3'
