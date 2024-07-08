@@ -37,7 +37,7 @@ EOS
         acc_li=() org_li=() asm_li=()
 
         tmpfile=$(mktemp)
-        $PYTHON3 -m biotp output_acc_org_asm \
+        pyvenv -m biotp output_acc_org_asm \
             "${DOWNLOAD}/${genus}/ncbi_dataset/data/assembly_data_report.jsonl" \
             > "$tmpfile"
         
@@ -98,7 +98,7 @@ EOS
     function declare_genome_by_genus() {
         acc_li=() org_li=() asm_li=()
         tmpfile=$(mktemp)
-        $PYTHON3 -m biotp output_acc_org_asm \
+        pyvenv -m biotp output_acc_org_asm \
             "${DOWNLOAD}/${genus}/ncbi_dataset/data/assembly_data_report.jsonl" \
             > "$tmpfile"
         while IFS=" " read -r i acc org asm; do

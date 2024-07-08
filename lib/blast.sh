@@ -149,7 +149,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -247,7 +247,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -288,7 +288,7 @@ EOS
                             -entry "$_id" \
                             -db "${DATA}/${add_genus}/${org}.pep.all.fasta" \
                             -out "$tmpfile"
-                        $PYTHON3 -m biotp rename_header \
+                        pyvenv -m biotp rename_header \
                             "$tmpfile" \
                             "$tmpfile" \
                             "${pnm_li[i]}" \
@@ -371,7 +371,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -478,7 +478,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -516,7 +516,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${add1_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -631,7 +631,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -669,7 +669,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${add1_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -703,7 +703,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${add2_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -825,7 +825,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -863,7 +863,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${add1_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -897,7 +897,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${add2_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -931,7 +931,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${add3_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -1068,7 +1068,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -1109,7 +1109,7 @@ EOS
                             -entry "$_id" \
                             -db "${DATA}/${add_genus}/${org}.pep.all.fasta" \
                             -out "$tmpfile"
-                        $PYTHON3 -m biotp rename_header \
+                        pyvenv -m biotp rename_header \
                             "$tmpfile" \
                             "$tmpfile" \
                             "${pnm_li[i]}" \
@@ -1215,7 +1215,7 @@ EOS
                         -entry "$_id" \
                         -db "${DATA}/${genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp rename_header \
+                    pyvenv -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -1326,13 +1326,13 @@ EOS
                     fi
                     tmpfile=$(mktemp)
                     local _seq; local _strand; local _start; local _end
-                    read _seq _strand _start _end <<< $($PYTHON3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$_id")
+                    read _seq _strand _start _end <<< $(pyvenv -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$_id")
                     echo "seqid: ${_seq}, strand: ${_strand}, start: ${_start}, end: ${_end}"
                     blastdbcmd \
                         -entry "$_seq" \
                         -db "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp slice_seq_flanking_region \
+                    pyvenv -m biotp slice_seq_flanking_region \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \
@@ -1417,13 +1417,13 @@ EOS
                     fi
                     tmpfile=$(mktemp)
                     local _seq; local _strand; local _start; local _end
-                    read _seq _strand _start _end <<< $($PYTHON3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$_id")
+                    read _seq _strand _start _end <<< $(pyvenv -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$_id")
                     echo "seqid: ${_seq}, strand: ${_strand}, start: ${_start}, end: ${_end}"
                     blastdbcmd \
                         -entry "$_seq" \
                         -db "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
                         -out "$tmpfile"
-                    $PYTHON3 -m biotp slice_seq_upstream_region \
+                    pyvenv -m biotp slice_seq_upstream_region \
                         "$tmpfile" \
                         "$tmpfile" \
                         "${pnm_li[i]}" \

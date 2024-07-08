@@ -36,7 +36,7 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -46,11 +46,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.all.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format ${taskdir}/${org_us}.cds.all.${feat}.fasta ${org_us}.cds
+            pyvenv -m jcvi.formats.fasta format ${taskdir}/${org_us}.cds.all.${feat}.fasta ${org_us}.cds
         done
         cd $ROOT
 
@@ -60,9 +60,9 @@ EOS
         cd $taskdir
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-        $PYTHON3 -m jcvi.compara.catalog ortholog ${ref_us} ${qry_us} --no_strip_names
-        $PYTHON3 -m jcvi.graphics.dotplot ${ref_us}.${qry_us}.anchors
-        $PYTHON3 -m jcvi.compara.synteny depth --histogram ${ref_us}.${qry_us}.anchors
+        pyvenv -m jcvi.compara.catalog ortholog ${ref_us} ${qry_us} --no_strip_names
+        pyvenv -m jcvi.graphics.dotplot ${ref_us}.${qry_us}.anchors
+        pyvenv -m jcvi.compara.synteny depth --histogram ${ref_us}.${qry_us}.anchors
         cd $ROOT
     }
 
@@ -113,7 +113,7 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -123,19 +123,19 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
 
     function search_microsynteny() {
         cd $taskdir
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=1 -o "${ref_us}.${qry_us}.i1.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=1 -o "${ref_us}.${qry_us}.i1.blocks"
         cd $ROOT
     }
 
@@ -186,7 +186,7 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -196,19 +196,19 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
 
     function search_microsynteny() {
         cd $taskdir
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=2 -o "${ref_us}.${qry_us}.i2.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=2 -o "${ref_us}.${qry_us}.i2.blocks"
         cd $ROOT
     }
 
@@ -258,7 +258,7 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${DATA}/${genus}/${org_us}.genome.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -268,19 +268,19 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
 
     function search_microsynteny() {
         cd $taskdir
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=3 -o "${ref_us}.${qry_us}.i3.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=3 -o "${ref_us}.${qry_us}.i3.blocks"
         cd $ROOT
     }
 
@@ -309,7 +309,7 @@ EOS
     }
 
     function output_longest_microsynteny() {
-        $PYTHON3 -m biotp output_longest_one_to_one_microsynteny \
+        pyvenv -m biotp output_longest_one_to_one_microsynteny \
             "${taskdir}/${ref_us}.bed" \
             "${taskdir}/${qry_us}.bed" \
             "${taskdir}/${ref_us}.${qry_us}.i1.blocks" \
@@ -339,7 +339,7 @@ EOS
     }
 
     function output_longest_microsynteny() {
-        $PYTHON3 -m biotp output_longest_one_to_two_microsynteny \
+        pyvenv -m biotp output_longest_one_to_two_microsynteny \
             "${taskdir}/${ref_us}.bed" \
             "${taskdir}/${qry_us}.bed" \
             "${taskdir}/${ref_us}.${qry_us}.i2.blocks" \
@@ -369,7 +369,7 @@ EOS
     }
 
     function output_longest_microsynteny() {
-        $PYTHON3 -m biotp output_longest_one_to_three_microsynteny \
+        pyvenv -m biotp output_longest_one_to_three_microsynteny \
             "${taskdir}/${ref_us}.bed" \
             "${taskdir}/${qry_us}.bed" \
             "${taskdir}/${ref_us}.${qry_us}.i3.blocks" \
@@ -421,11 +421,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m biotp slice_lines_by_seqids \
+            pyvenv -m biotp slice_lines_by_seqids \
                 "${DATA}/${genus}/${org_us}.genome.gff" \
                 "${taskdir}/${org_us}.genome.sliced.gff" \
                 "${seq_li[@]}"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -435,15 +435,15 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp slice_headers_by_ids \
+            pyvenv -m biotp slice_headers_by_ids \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${seq_li[@]}"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
@@ -452,8 +452,8 @@ EOS
         cd $taskdir
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=1 -o "${ref_us}.${qry_us}.i1.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=1 -o "${ref_us}.${qry_us}.i1.blocks"
         > "blocks"
         cat "${ref_us}.${qry_us}.i1.blocks" > "blocks"
         > "blocks.layout"
@@ -462,8 +462,8 @@ EOS
         echo "0.5, 0.6, 0, left, center, #E69F00, 1, ${seq_li[1]}" >> "blocks.layout"
         echo "# edges" >> "blocks.layout"
         echo "e, 0, 1" >> "blocks.layout"
-        $PYTHON3 -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
-        $PYTHON3 -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
+        pyvenv -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
+        pyvenv -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
         cd $ROOT
     }
 
@@ -515,11 +515,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m biotp slice_lines_by_seqids \
+            pyvenv -m biotp slice_lines_by_seqids \
                 "${DATA}/${genus}/${org_us}.genome.gff" \
                 "${taskdir}/${org_us}.genome.sliced.gff" \
                 "${seq_li[@]}"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -529,15 +529,15 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp slice_headers_by_ids \
+            pyvenv -m biotp slice_headers_by_ids \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${seq_li[@]}"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
@@ -546,8 +546,8 @@ EOS
         cd $taskdir
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=2 -o "${ref_us}.${qry_us}.i2.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=2 -o "${ref_us}.${qry_us}.i2.blocks"
         > "blocks"
         cat "${ref_us}.${qry_us}.i2.blocks" > "blocks"
         > "blocks.layout"
@@ -558,8 +558,8 @@ EOS
         echo "# edges" >> "blocks.layout"
         echo "e, 0, 1" >> "blocks.layout"
         echo "e, 0, 2" >> "blocks.layout"
-        $PYTHON3 -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
-        $PYTHON3 -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
+        pyvenv -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
+        pyvenv -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
         cd $ROOT
     }
 
@@ -611,11 +611,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m biotp slice_lines_by_seqids \
+            pyvenv -m biotp slice_lines_by_seqids \
                 "${DATA}/${genus}/${org_us}.genome.gff" \
                 "${taskdir}/${org_us}.genome.sliced.gff" \
                 "${seq_li[@]}"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -625,15 +625,15 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp slice_headers_by_ids \
+            pyvenv -m biotp slice_headers_by_ids \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${seq_li[@]}"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
@@ -642,8 +642,8 @@ EOS
         cd $taskdir
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=3 -o "${ref_us}.${qry_us}.i3.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=3 -o "${ref_us}.${qry_us}.i3.blocks"
         > "blocks"
         cat "${ref_us}.${qry_us}.i3.blocks" > "blocks"
         > "blocks.layout"
@@ -656,8 +656,8 @@ EOS
         echo "e, 0, 1" >> "blocks.layout"
         echo "e, 0, 2" >> "blocks.layout"
         echo "e, 0, 3" >> "blocks.layout"
-        $PYTHON3 -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
-        $PYTHON3 -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
+        pyvenv -m jcvi.formats.bed merge "${ref_us}.bed" "${qry_us}.bed" -o "${ref_us}.${qry_us}.bed"
+        pyvenv -m jcvi.graphics.synteny blocks "${ref_us}.${qry_us}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
         cd $ROOT
     }
 
@@ -714,11 +714,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m biotp slice_lines_by_seqids \
+            pyvenv -m biotp slice_lines_by_seqids \
                 "${DATA}/${genus}/${org_us}.genome.gff" \
                 "${taskdir}/${org_us}.genome.sliced.gff" \
                 "${seq_li[@]}"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -728,15 +728,15 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp slice_headers_by_ids \
+            pyvenv -m biotp slice_headers_by_ids \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${seq_li[@]}"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
@@ -745,14 +745,14 @@ EOS
         cd $taskdir
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-        $PYTHON3 -m jcvi.compara.catalog ortholog ${ref_us} ${qry_us} --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan ${ref_us}.bed ${ref_us}.${qry_us}.lifted.anchors --iter=1 -o ${ref_us}.${qry_us}.i1.blocks
+        pyvenv -m jcvi.compara.catalog ortholog ${ref_us} ${qry_us} --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan ${ref_us}.bed ${ref_us}.${qry_us}.lifted.anchors --iter=1 -o ${ref_us}.${qry_us}.i1.blocks
         cd $ROOT
     }
 
     function makeblastdb_microsynteny() {
         cd $taskdir
-        $PYTHON3 -m biotp rename_headers_to_features \
+        pyvenv -m biotp rename_headers_to_features \
             "${DATA}/${out_genus}/${out}.cds.all.fasta" \
             "${taskdir}/${out}.cds" \
             "${out_feat}"
@@ -773,7 +773,7 @@ EOS
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
         tmpfile=$(mktemp)
-        $PYTHON3 -m biotp output_blocks \
+        pyvenv -m biotp output_blocks \
             "${ref_us}.${qry_us}.i1.blocks" \
                 > "$tmpfile"
 
@@ -802,7 +802,7 @@ EOS
                 -entry "${ref_li[i]}" \
                 -db ${taskdir}/${ref_us}.cds \
                 -out ${ref_li[i]}.cds
-            $PYTHON3 -m biotp rename_header \
+            pyvenv -m biotp rename_header \
                 "${ref_li[i]}.cds" \
                 "${ref_li[i]}.cds" \
                 "${seq_li[0]}" \
@@ -822,7 +822,7 @@ EOS
                 -entry "${qry_li[i]}" \
                 -db "${taskdir}/${qry_us}.cds" \
                 -out "$tmpfile"
-            $PYTHON3 -m biotp rename_header \
+            pyvenv -m biotp rename_header \
                 "$tmpfile" \
                 "$tmpfile" \
                 "${seq_li[1]}" \
@@ -846,7 +846,7 @@ EOS
                     -entry "$_id" \
                     -db ${taskdir}/${out_}.cds \
                     -out "$tmpfile"
-                $PYTHON3 -m biotp rename_header \
+                pyvenv -m biotp rename_header \
                     "$tmpfile" \
                     "$tmpfile" \
                     "${out}_${_id}" \
@@ -947,11 +947,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m biotp slice_lines_by_seqids \
+            pyvenv -m biotp slice_lines_by_seqids \
                 "${DATA}/${genus}/${org_us}.genome.gff" \
                 "${taskdir}/${org_us}.genome.sliced.gff" \
                 "${seq_li[@]}"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -961,23 +961,23 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp slice_headers_by_ids \
+            pyvenv -m biotp slice_headers_by_ids \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${seq_li[@]}"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
                 "$feat"
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
 
     function search_microsynteny() {
         cd $taskdir
-        $PYTHON3 -m jcvi.compara.catalog ortholog ${ref_us} ${qry_us} --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan ${ref_us}.bed ${ref_us}.${qry_us}.lifted.anchors --iter=2 -o ${ref_us}.${qry_us}.i2.blocks
+        pyvenv -m jcvi.compara.catalog ortholog ${ref_us} ${qry_us} --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan ${ref_us}.bed ${ref_us}.${qry_us}.lifted.anchors --iter=2 -o ${ref_us}.${qry_us}.i2.blocks
         cd $ROOT
     }
 
@@ -985,7 +985,7 @@ EOS
         > "${taskdir}/${ref_us}.${qry_us}.cds"
         cat "${taskdir}/${ref_us}.cds" >> "${taskdir}/${ref_us}.${qry_us}.cds"
         cat "${taskdir}/${qry_us}.cds" >> "${taskdir}/${ref_us}.${qry_us}.cds"
-        $PYTHON3 -m biotp rename_headers_to_features \
+        pyvenv -m biotp rename_headers_to_features \
             "${DATA}/${out_genus}/${out}.cds.all.fasta" \
             "${taskdir}/${out}.cds" \
             "${out_feat}"
@@ -1000,7 +1000,7 @@ EOS
 
     function declare_microsynteny() {
         tmpfile=$(mktemp)
-        $PYTHON3 -m biotp output_blocks \
+        pyvenv -m biotp output_blocks \
             "${taskdir}/${ref_us}.${qry_us}.i2.blocks" \
                 > "$tmpfile"
         ref_li=()
@@ -1028,7 +1028,7 @@ EOS
                 -entry "${ref_li[i]}" \
                 -db "${taskdir}/${ref_us}.${qry_us}.cds" \
                 -out "${taskdir}/${ref_li[i]}.cds"
-            $PYTHON3 -m biotp rename_header \
+            pyvenv -m biotp rename_header \
                 "${taskdir}/${ref_li[i]}.cds" \
                 "${taskdir}/${ref_li[i]}.cds" \
                 "${seq_li[0]}" \
@@ -1046,7 +1046,7 @@ EOS
                 -entry "${qry1_li[i]}" \
                 -db "${taskdir}/${ref_us}.${qry_us}.cds" \
                 -out "$tmpfile"
-            $PYTHON3 -m biotp rename_header \
+            pyvenv -m biotp rename_header \
                 "$tmpfile" \
                 "$tmpfile" \
                 "${seq_li[1]}" \
@@ -1061,7 +1061,7 @@ EOS
                 -entry "${qry2_li[i]}" \
                 -db "${taskdir}/${ref_us}.${qry_us}.cds" \
                 -out "$tmpfile"
-            $PYTHON3 -m biotp rename_header \
+            pyvenv -m biotp rename_header \
                 "$tmpfile" \
                 "$tmpfile" \
                 "${seq_li[2]}" \
@@ -1106,7 +1106,7 @@ EOS
             fi
 
             ## 外群追加
-            $PYTHON3 -m biotp rename_header \
+            pyvenv -m biotp rename_header \
                 "$tmpfile" \
                 "$tmpfile" \
                 "${out}" \
@@ -1136,7 +1136,7 @@ EOS
             fi
             cat "${taskdir}/${ref_li[i]}.cds.fasta" >> "${taskdir}/merged.fasta"
         done
-        $PYTHON3 -m biotp merge_seqs_by_seqids \
+        pyvenv -m biotp merge_seqs_by_seqids \
             "${taskdir}/merged.fasta" \
             "${taskdir}/merged.fasta"
     } 
@@ -1212,11 +1212,11 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.genome.gff -> ${org_us}.bed"
-            $PYTHON3 -m biotp slice_lines_by_seqids \
+            pyvenv -m biotp slice_lines_by_seqids \
                 "${DATA}/${genus}/${org_us}.genome.gff" \
                 "${taskdir}/${org_us}.genome.sliced.gff" \
                 "${seqid_ref}" "${seqid_qry1}" "${seqid_qry2}"
-            $PYTHON3 -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
+            pyvenv -m jcvi.formats.gff bed --type=gene --key=${feat} "${taskdir}/${org_us}.genome.sliced.gff" -o "${org_us}.bed"
         done
         cd $ROOT
     }
@@ -1226,28 +1226,28 @@ EOS
         for org in "$ref" "$qry"; do
             org_us=${org/ /_}
             echo "${org_us}.cds.all.fasta -> ${org_us}.cds"
-            $PYTHON3 -m biotp slice_headers_by_ids \
+            pyvenv -m biotp slice_headers_by_ids \
                 "${DATA}/${genus}/${org_us}.cds.all.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${seqid_ref}" "${seqid_qry1}" "${seqid_qry2}"
-            $PYTHON3 -m biotp rename_headers_to_features \
+            pyvenv -m biotp rename_headers_to_features \
                 "${taskdir}/${org_us}.cds.sliced.fasta" \
                 "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" \
                 "$feat" 
-            $PYTHON3 -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
+            pyvenv -m jcvi.formats.fasta format "${taskdir}/${org_us}.cds.sliced.${feat}.fasta" "${org_us}.cds"
         done
         cd $ROOT
     }
 
     function search_microsynteny() {
         cd $taskdir
-        $PYTHON3 -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
-        $PYTHON3 -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=2 -o "${ref_us}.${qry_us}.i2.blocks"
+        pyvenv -m jcvi.compara.catalog ortholog "${ref_us}" "${qry_us}" --no_strip_names
+        pyvenv -m jcvi.compara.synteny mcscan "${ref_us}.bed" "${ref_us}.${qry_us}.lifted.anchors" --iter=2 -o "${ref_us}.${qry_us}.i2.blocks"
         cd $ROOT
     }
 
     function output_besthit() {
-        $PYTHON3 -m biotp output_besthit_one_to_two_microsynteny \
+        pyvenv -m biotp output_besthit_one_to_two_microsynteny \
             "${taskdir}/${ref_us}.bed" \
             "${taskdir}/${qry_us}.bed" \
             "${taskdir}/${ref_us}.${qry_us}.i2.blocks" \

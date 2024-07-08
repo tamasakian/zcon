@@ -21,10 +21,10 @@ EOS
     }
 
     function promer_dna_flanking_region() {
-        $PYTHON3 -m biotp remove_n_from_seqs \
+        pyvenv -m biotp remove_n_from_seqs \
             "${taskdir}/${genus}.${symbol}.dna_flanking_region.fasta" \
             "${taskdir}/${genus}.${symbol}.dna_flanking_region.fasta"
-        $PYTHON3 -m biotp split_multi_into_single \
+        pyvenv -m biotp split_multi_into_single \
             "${taskdir}/${genus}.${symbol}.dna_flanking_region.fasta" \
             "${taskdir}"
         for pnm1 in ${pnm_li[*]}; do
