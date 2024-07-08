@@ -2,7 +2,6 @@
 
 #### ZCON Example
 
-set -euo pipefail
 source $(dirname "$0")/profile.sh
 
 ## Library
