@@ -116,14 +116,12 @@ EOS
         symbol="$2"
         symbol_org="${3/ /_}"
         evalue=$4
+
+        typeset -g -A pep_li
         local _pli=("${@:5}")
         for ((i=1; i<${#_pli[@]}; i+=2)); do 
-            echo "${i}, ${_pli[i]}, ${_pli[i+1]}"
-            pid_li+=("${_pli[i]}")
-            pnm_li+=("${_pli[i+1]}")
+            pep_li[${_pli[i]}]="${_pli[i+1]}"
         done
-
-        echo "${pid_li[1]}"
     }
 
     function make_dir() {
@@ -144,19 +142,19 @@ EOS
             fi
             echo "Hit."; echo "$_ids"
             for _id in ${(f)_ids}; do
-                for ((i=1; i<=${#pid_li[@]}; ++i)); do
-                    if [[ "$_id" != "${pid_li[i]}" ]]; then
+                for pep_id in ${(k)pep_li}; do
+                    if [[ "$_id" != "$pep_id" ]]; then
                         continue
                     fi
                     tmpfile=$(mktemp)
                     blastdbcmd \
-                        -entry "$_id" \
+                        -entry "$pep_id" \
                         -db "${DATA}/${genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
                     python3 -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
-                        "${pnm_li[i]}" \
+                        "${pep_li[$pep_id]}" \
                         "" \
                         ""
                     cat "$tmpfile" >> "${taskdir}/${genus}.${symbol}.pep.fasta"
