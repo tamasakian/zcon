@@ -3,7 +3,7 @@
 #### Function libs with RAxML-NG
 
 function construct_mltree_msa_pep_blastp_genus_symbol() {
-    ## This is depend on construct_msa_pep_blastp_genus_symbol, mafft.sh
+    ## This is depend on construct_msa_pep_blastp_genus_symbol, mafft.zsh
     function usage() {
         cat <<EOS
 Usage:  construct_mltree_msa_pep_blastp_genus_symbol <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
@@ -38,7 +38,7 @@ EOS
 }
 
 function construct_mltree_trimmed_msa_pep_blastp_genus_symbol() {
-    ## This is depend on trim_msa_pep_blastp_genus_symbol, trimal.sh
+    ## This is depend on trim_msa_pep_blastp_genus_symbol, trimal.zsh
     function usage() {
         cat <<EOS
 Usage:  construct_mltree_trimmed_msa_pep_blastp_genus_symbol <arg1> <arg2> <arg3> (<arg4> <arg5> ...)

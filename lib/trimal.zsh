@@ -3,7 +3,7 @@
 #### Function libs with trimAl
 
 function trim_msa_pep_blastp_genus_symbol() {
-    ## This is depend on construct_msa_pep_blastp_genus_symbol, mafft.sh
+    ## This is depend on construct_msa_pep_blastp_genus_symbol, mafft.zsh
     function usage() {
         cat <<EOS
 Usage:  trim_msa_pep_blastp_genus_symbol <arg1> <arg2> <arg3> (<arg4> <arg5> ...)

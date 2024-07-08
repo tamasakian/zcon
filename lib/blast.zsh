@@ -3,7 +3,7 @@
 #### Function libs with BLAST
 
 function makeblastdb_genome_by_genus() {
-    ## This function is depend on fetch_genome_by_genus, datasets.sh
+    ## This function is depend on fetch_genome_by_genus, datasets.zsh
     function usage() {
         cat <<EOS
 Usage:  makeblastdb_genome_by_genus <arg1>

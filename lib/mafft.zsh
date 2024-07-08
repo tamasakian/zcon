@@ -3,7 +3,7 @@
 #### Function libs with MAFFT
 
 function construct_msa_pep_blastp_genus_symbol() {
-    ## This function is based on construct_pep_blastp_genus_symbol, blast.sh
+    ## This function is based on construct_pep_blastp_genus_symbol, blast.zsh
     function usage() {
         cat <<EOS
 Usage:  construct_msa_pep_blastp_genus_symbol <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
@@ -32,7 +32,7 @@ EOS
 }
 
 function addn_contruct_msa_pep_blastp_genus_symbol() {
-    ## This function is based on addn_construct_pep_blastp_genus_symbol, blast.sh
+    ## This function is based on addn_construct_pep_blastp_genus_symbol, blast.zsh
     function usage() {
         cat <<EOS
 Usage:  addn_contruct_msa_pep_blastp_genus_symbol <arg1> <arg2> (<arg3> <arg4> <arg5> ...) <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
