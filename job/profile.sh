@@ -2,10 +2,6 @@
 
 #### ZCON Profile
 
-setopt err_exit
-setopt no_unset
-setopt pipe_fail
-
 export ROOT=${HOME}/zcon
 export DATA=${ROOT}/data
 export DOC=${ROOT}/doc
@@ -15,9 +11,8 @@ export LIB=${ROOT}/lib
 export SCRIPT=${ROOT}/script
 export TASKFILE=${ROOT}/taskfile
 
-local _dirs; _dirs=($DATA $DOC $DOWNLOAD $JOB $LIB $SCRIPT $TASKFILE)
-for _dir in ${_dirs[*]}; do
+for _dir in $DATA $DOC $DOWNLOAD $JOB $LIB $SCRIPT $TASKFILE; do
     mkdir -p "$_dir"
 done
 
-alias pyvenv='. ${ROOT}/venv/bin/activate && ${ROOT}/venv/bin/python3'
+source "${ROOT}/venv/bin/activate"
