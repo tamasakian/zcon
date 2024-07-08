@@ -17,6 +17,7 @@ CommandLineTools
 PythonPackages
 
 - jcvi
+- biotp
 
 ## DirectoryStructureDiagram
 
