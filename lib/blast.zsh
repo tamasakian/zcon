@@ -37,6 +37,39 @@ EOS
     main "$@"
 }
 
+function remakeblastdb_genome_by_genus() {
+    function usage() {
+        cat <<EOS
+Usage:  remakeblastdb_genome_by_genus <arg1>
+
+    arg1: genus
+
+EOS
+        exit 1
+    }
+    
+    function makeblastdb_genome() {
+        for org in ${org_li[*]}; do
+            makeblastdb \
+                -in "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+                -dbtype nucl -hash_index -parse_seqids
+            makeblastdb \
+                -in "${DATA}/${genus}/${org}.cds.all.fasta" \
+                -dbtype nucl -hash_index -parse_seqids
+            makeblastdb \
+                -in "${DATA}/${genus}/${org}.pep.all.fasta" \
+                -dbtype prot -hash_index -parse_seqids
+        done
+    }
+
+    function main() {
+        redeclare_genome_by_genus "$@"
+        makeblastdb_genome
+    }
+
+    main "$@"
+}
+
 function output_blastp_genus_symbol() {
     function usage() {
         cat <<EOS
