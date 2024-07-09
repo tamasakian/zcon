@@ -2,6 +2,12 @@
 
 ZCON: A Zsh-driven Multifunctional Library for Genomics Analysis.
 
+## Installation
+
+```zsh
+git clone https://github.com/tamasakian/zcon.git
+```
+
 ## Dependencies
 
 ### CommandLineTools
@@ -51,7 +57,6 @@ zcon/
 │
 ├── job/
 │   ├── profile.zsh
-│   │
 │   ├── example.zsh
 │   │
 │   └── job_files
@@ -71,7 +76,7 @@ zcon/
 ├── taskfile/
 │   └── output_files
 │
-└── venv
+└── venv/
 ```
 
 ## Usage
