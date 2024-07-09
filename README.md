@@ -29,6 +29,7 @@ If you use `venv` to manage packages;
 
 ```zsh
 ## prepare venv
+cd zcon
 python3 -m venv venv
 . venv/bin/activate
 
