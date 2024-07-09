@@ -3,7 +3,8 @@
 #### Function libs with BLAST
 
 function makeblastdb_genome_by_genus() {
-    ## This function is depend on fetch_genome_by_genus, datasets.zsh
+    ## This function is depend on fetch_genome_by_genus
+    ## which is located in datasets.zsh
     function usage() {
         cat <<EOS
 Usage:  makeblastdb_genome_by_genus <arg1>
@@ -66,10 +67,8 @@ EOS
     }
 
     function blastp_genus_symbol() {
-        echo "Protein BLAST"
         touch "${taskdir}/${genus}.${symbol}.blastp"
         for org in ${org_li[*]}; do
-            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
             tmpfile=$(mktemp)
             blastp \
                 -outfmt 7 -evalue $evalue \
@@ -100,8 +99,9 @@ Usage:  construct_pep_blastp_genus_symbol <arg1> <arg2> <arg3> <arg4> (<arg5> <a
     arg2: symbol
     arg3: symbol_org
     arg4: evalue
-    arg5: pid
-    arg6: pnm
+
+    arg5: protein_id
+    arg6: protein_name
     ...
 
 EOS
@@ -117,30 +117,26 @@ EOS
         symbol_org="${3/ /_}"
         evalue=$4
 
-        typeset -g -A pep_li
-        local _pli=("${@:5}")
-        for ((i=1; i<${#_pli[@]}; i+=2)); do 
+        typeset -g -A pep_li; local _pli=("${@:5}")
+        for ((i=1; i<${#_pli[@]}; i+=2)); do
             pep_li[${_pli[i]}]="${_pli[i+1]}"
+                ## key: protein_id
+                ## value: protein_name
         done
     }
 
     function make_dir() {
         taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function retrieve_blastp() {
         touch "${taskdir}/${genus}.${symbol}.pep.fasta"
-        echo "Protein BLAST"
         for org in ${org_li[*]}; do
-            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
-            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
-                echo "No hit."
                 continue
             fi
-            echo "Hit."; echo "$_ids"
             for _id in ${(f)_ids}; do
                 for pep_id in ${(k)pep_li}; do
                     if [[ "$_id" != "$pep_id" ]]; then
@@ -166,8 +162,8 @@ EOS
 
     function main() {
         parse_args "$@"
-        redeclare_genome_by_genus "$genus"
         make_dir
+        redeclare_genome_by_genus "$genus"
         retrieve_blastp
     }
 
@@ -177,19 +173,20 @@ EOS
 function addn_construct_pep_blastp_genus_symbol() {
     function usage() {
         cat <<EOS
-Usage:  addn_construct_pep_blastp_genus_symbol <arg1> <arg2> (<arg3> <arg4> <arg5> ...) <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
+Usage:  addn_construct_pep_blastp_genus_symbol <arg1> <arg2> (<arg3> <arg4> ... <arg(n+2)>) <arg(n+3)> <arg(n+4)> <arg(n+5)> (<arg(n+6)> <arg(n+7)> ...)
 
     arg1: cons_genus
     arg2: num [number of add_genus]
     arg3: add1_genus
     arg4: add2_genus
-    arg5: add3_genus
-    ...
-    arg1: symbol
-    arg2: symbol_org
-    arg3: evalue
-    arg4: pid
-    arg5: pnm
+    arg(n+2): addn_genus
+
+    arg(n+3): symbol
+    arg(n+4): symbol_org
+    arg(n+5): evalue
+
+    arg(n+6): protein_id
+    arg(n+7): protein_name
     ...
 
 EOS
@@ -204,8 +201,8 @@ EOS
         num=$2
 
         addn_genus=()
-        for ((i=0; i<num; i++)); do
-            addn_genus[i]="${@:3+i:1}"
+        for ((i=1; i<num+1; i++)); do
+            addn_genus[i]="${@:2+i:1}"
         done
 
         symbol="${@:3+num:1}"
@@ -213,46 +210,39 @@ EOS
         symbol_org=${symbol_org/ /_}
         evalue="${@:5+num:1}"
 
-        local _pli=("${@:6+num}")
-        pid_li=()
-        pnm_li=()
-        for ((i=0; i<${#_pli[@]}; i+=2)); do
-            pid_li+=("${_pli[i]}")
-            pnm_li+=("${_pli[i+1]}")
+        typeset -g -A pep_li; local _pli=("${@:6+num}")
+        for ((i=1; i<${#_pli[@]}; i+=2)); do
+            pep_li[${_pli[i]}]="${_pli[i+1]}"
         done
     }
 
     function make_dir() {
         taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
-        echo "Protein BLAST"
         for org in ${org_li[*]}; do
             echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
-            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
+            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
-                echo "No hit."
                 continue
             fi
-            echo "Hit."; echo "$_ids"
-            for _id in $_ids; do
-                for ((i=0; i<${#pid_li[@]}; ++i)); do
-                    if [[ "$_id" != "${pid_li[i]}" ]]; then
+            for _id in ${(f)_ids}; do
+                for pep_id in ${(k)pep_li}; do
+                    if [[ "$_id" != "$pep_id" ]]; then
                         continue
                     fi
                     tmpfile=$(mktemp)
                     blastdbcmd \
-                        -entry "$_id" \
+                        -entry "$pep_id" \
                         -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
                         -out "$tmpfile"
                     python3 -m biotp rename_header \
                         "$tmpfile" \
                         "$tmpfile" \
-                        "${pnm_li[i]}" \
+                        "${pep_li[$pep_id]}" \
                         "" \
                         ""
                     cat "$tmpfile" >> "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
@@ -262,179 +252,31 @@ EOS
         done
     }
 
-    function unset_genome_by_genus() {
-        unset -v acc_li org_li asm_li
-    }
-
     function addn_genus_symbol() {
         for add_genus in ${addn_genus[*]}; do
-            unset_genome_by_genus
+            unset -v acc_li org_li asm_li
+
             redeclare_genome_by_genus "$add_genus"
-            echo "Protein BLAST with ${add_genus}"
             for org in ${org_li[*]}; do
-                echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-                local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${add_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
-                local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+                local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${add_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
+                local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
                 if [ -z "$_ids" ]; then
-                    echo "No hit."
                     continue
                 fi
-                echo "Hit."; echo "$_ids"
-                for _id in $_ids; do
-                    for ((i=0; i<${#pid_li[@]}; ++i)); do
-                        if [[ "$_id" != "${pid_li[i]}" ]]; then
+                for _id in ${(f)_ids}; do
+                    for pep_id in ${(k)pep_li}; do
+                        if [[ "$_id" != "$pep_id" ]]; then
                             continue
                         fi
                         tmpfile=$(mktemp)
                         blastdbcmd \
-                            -entry "$_id" \
+                            -entry "$pep_id" \
                             -db "${DATA}/${add_genus}/${org}.pep.all.fasta" \
                             -out "$tmpfile"
                         python3 -m biotp rename_header \
                             "$tmpfile" \
                             "$tmpfile" \
-                            "${pnm_li[i]}" \
-                            "" \
-                            ""
-                        cat "$tmpfile" >> ""
-                        rm "$tmpfile"
-                    done
-                done
-            done
-        done
-    }
-
-    function main() {
-        parse_args "$@"
-        redeclare_genome_by_genus "$cons_genus"
-        make_dir
-        retrieve_blastp_genus_symbol
-        addn_genus_symbol
-    }
-
-    main "$@"    
-}
-
-function addn_genus_to_mltree_genus_symbol() {
-    function usage() {
-        cat <<EOS
-Usage:  addn_genus_to_mltree_genus_symbol <arg1> <arg2> (<arg3> <arg4> <arg5> ...) <arg1> <arg2> <arg3> (<arg4> <arg5> ...)
-
-    arg1: cons_genus
-    arg2: num [number of add_genus]
-    arg3: add1_genus
-    arg4: add2_genus
-    arg5: add3_genus
-    ...
-    arg1: symbol
-    arg2: symbol_org
-    arg3: evalue
-    arg4: pid
-    arg5: pnm
-    ...
-
-EOS
-        exit 1
-    } 
-
-    function parse_args() {
-        if [[ $# -lt 9 ]]; then
-            usage
-        fi
-        cons_genus="$1"
-        num=$2
-
-        addn_genus=()
-        for ((i=0; i<num; i++)); do
-            addn_genus[i]="${@:3+i:1}"
-        done
-
-        symbol="${@:3+num:1}"
-        symbol_org="${@:4+num:1}"
-        symbol_org=${symbol_org/ /_}
-        evalue="${@:5+num:1}"
-
-        local _pli=("${@:6+num}")
-        pid_li=()
-        pnm_li=()
-        for ((i=0; i<${#_pli[@]}; i+=2)); do
-            pid_li+=("${_pli[i]}")
-            pnm_li+=("${_pli[i+1]}")
-        done
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
-    }
-
-    function retrieve_blastp_genus_symbol() {
-        touch "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
-        echo "Protein BLAST"
-        for org in ${org_li[*]}; do
-            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
-            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
-            if [ -z "$_ids" ]; then
-                echo "No hit."
-                continue
-            fi
-            echo "Hit."; echo "$_ids"
-            for _id in $_ids; do
-                for ((i=0; i<${#pid_li[@]}; ++i)); do
-                    if [[ "$_id" != "${pid_li[i]}" ]]; then
-                        continue
-                    fi
-                    tmpfile=$(mktemp)
-                    blastdbcmd \
-                        -entry "$_id" \
-                        -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" \
-                        -out "$tmpfile"
-                    python3 -m biotp rename_header \
-                        "$tmpfile" \
-                        "$tmpfile" \
-                        "${pnm_li[i]}" \
-                        "" \
-                        ""
-                    cat "$tmpfile" >> "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
-                    rm "$tmpfile"
-                done
-            done
-        done
-    }
-
-    function unset_genome_by_genus() {
-        unset -v acc_li org_li asm_li
-    }
-
-    function addn_genus_symbol() {
-        for add_genus in ${addn_genus[*]}; do
-            unset_genome_by_genus
-            redeclare_genome_by_genus "$add_genus"
-            echo "Protein BLAST with ${add_genus}"
-            for org in ${org_li[*]}; do
-                echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-                local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${add_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
-                local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
-                if [ -z "$_ids" ]; then
-                    echo "No hit."
-                    continue
-                fi
-                echo "Hit."; echo "$_ids"
-                for _id in $_ids; do
-                    for ((i=0; i<${#pid_li[@]}; ++i)); do
-                        if [[ "$_id" != "${pid_li[i]}" ]]; then
-                            continue
-                        fi
-                        tmpfile=$(mktemp)
-                        blastdbcmd \
-                            -entry "$_id" \
-                            -db "${DATA}/${add_genus}/${org}.pep.all.fasta" \
-                            -out "$tmpfile"
-                        python3 -m biotp rename_header \
-                            "$tmpfile" \
-                            "$tmpfile" \
-                            "${pnm_li[i]}" \
+                            "${pep_li[$pep_id]}" \
                             "" \
                             ""
                         cat "$tmpfile" >> "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
@@ -445,38 +287,15 @@ EOS
         done
     }
 
-    function construct_msa_blastp() {
-        mafft "${taskdir}/${cons_genus}.${symbol}.pep.fasta" > "${taskdir}/${cons_genus}.${symbol}.pep.aln"
-    }
-
-    function estimate_mltree() {
-        raxml-ng \
-            --msa "${taskdir}/${cons_genus}.${symbol}.pep.aln" \
-            --all \
-            --model Blosum62 \
-            --bs-trees 1000 \
-            --threads 8 \
-            --redo
-    }
-
-    function make_tree() {
-        Rscript ${SCRIPT}/make_tree.R  \
-            "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support" \
-            "${taskdir}/${cons_genus}.${symbol}.pep.aln.raxml.support.png"
-    }
-
     function main() {
         parse_args "$@"
-        redeclare_genome_by_genus "$cons_genus"
         make_dir
+        redeclare_genome_by_genus "$cons_genus"
         retrieve_blastp_genus_symbol
         addn_genus_symbol
-        construct_msa_blastp
-        estimate_mltree
-        make_tree
     }
 
-    main "$@"
+    main "$@"    
 }
 
 function construct_dna_flanking_region_blastp_genus_symbol() {
@@ -489,9 +308,11 @@ Usage:  construct_dna_flanking_region_blastp_genus_symbol <arg1> <arg2> <arg3> <
     arg3: symbol_org
     arg4: evalue
     arg5: bp
-    arg6: pid
-    arg7: pnm
+
+    arg6: protein_id
+    arg7: protein_name
     ...
+
 EOS
         exit 1
     }
@@ -505,39 +326,33 @@ EOS
         symbol_org="${3/ /_}"
         evalue=$4
         bp=$5
-        local _pli=("${@:6}")
-        for ((i=0; i<${#_pli[@]}; i+=2)); do
-            pid_li+=("${_pli[i]}")
-            pnm_li+=("${_pli[i+1]}")
+
+        typeset -g -A pep_li; local _pli=("${@:6}")
+        for ((i=1; i<${#_pli[@]}; i+=2)); do
+            pep_li[${_pli[i]}]="${_pli[i+1]}"
         done
     }
 
     function make_dir() {
         taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.dna_flanking_region.fasta"
-        echo "Protein BLAST"
         for org in ${org_li[*]}; do
-            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
-            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
-                echo "No hit."
                 continue
             fi
-            echo "Hit."; echo "$_ids"
-            for _id in $_ids; do
-                for ((i=0; i<${#pid_li[@]}; ++i)); do
-                    if [[ "$_id" != "${pid_li[i]}" ]]; then
+            for _id in ${(f)_ids}; do
+                for pep_id in ${(k)pep_li}; do
+                    if [[ "$_id" != "$pep_id" ]]; then
                         continue
                     fi
                     tmpfile=$(mktemp)
-                    local _seq; local _strand; local _start; local _end
-                    read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$_id")
-                    echo "seqid: ${_seq}, strand: ${_strand}, start: ${_start}, end: ${_end}"
+                    local _seq && local _strand && local _start && local _end
+                    read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$pep_id")
                     blastdbcmd \
                         -entry "$_seq" \
                         -db "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
@@ -545,9 +360,9 @@ EOS
                     python3 -m biotp slice_seq_flanking_region \
                         "$tmpfile" \
                         "$tmpfile" \
-                        "${pnm_li[i]}" \
-                        "${pid_li[i]}" \
-                        "${bp}bp flanking region [${org}]" \
+                        "${pep_li[$pep_id]}" \
+                        "$pep_id" \
+                        "${bp}bp-flanking-region" \
                         "$_strand" \
                         "$_start" \
                         "$_end" \
@@ -561,8 +376,8 @@ EOS
 
     function main() {
         parse_args "$@"
-        redeclare_genome_by_genus "$genus"
         make_dir
+        redeclare_genome_by_genus "$genus"
         retrieve_blastp_genus_symbol
     }
 
@@ -579,8 +394,9 @@ Usage:  construct_dna_upstream_region_blastp_genus_symbol <arg1> <arg2> <arg3> <
     arg3: symbol_org
     arg4: evalue
     arg5: bp
-    arg6: pid
-    arg7: pnm
+
+    arg6: protein_id
+    arg7: protein_name
     ...
     
 EOS
@@ -596,38 +412,33 @@ EOS
         symbol_org="${3/ /_}"
         evalue=$4
         bp=$5
-        local _pli=("${@:6}")
-        for ((i=0; i<${#_pli[@]}; i+=2)); do
-            pid_li+=("${_pli[i]}")
-            pnm_li+=("${_pli[i+1]}")
+
+        typeset -g -A pep_li; local _pli=("${@:6}")
+        for ((i=1; i<${#_pli[@]}; i+=2)); do
+            pep_li[${_pli[i]}]="${_pli[i+1]}"
         done
     }
 
     function make_dir() {
         taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.dna_upstream_region.fasta"
-        echo "Protein BLAST"
         for org in ${org_li[*]}; do
-            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
-            local _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
-            local _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
-                echo "No hit."
                 continue
             fi
-            echo "Hit."; echo "$_ids"
-            for _id in $_ids; do
-                for ((i=0; i<${#pid_li[@]}; ++i)); do
-                    if [[ "$_id" != "${pid_li[i]}" ]]; then
+            for _id in ${(f)_ids}; do
+                for pep_id in ${(k)pep_li}; do
+                    if [[ "$_id" != "$pep_id" ]]; then
                         continue
                     fi
                     tmpfile=$(mktemp)
                     local _seq; local _strand; local _start; local _end
-                    read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$_id")
+                    read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$pep_id")
                     echo "seqid: ${_seq}, strand: ${_strand}, start: ${_start}, end: ${_end}"
                     blastdbcmd \
                         -entry "$_seq" \
@@ -636,9 +447,9 @@ EOS
                     python3 -m biotp slice_seq_upstream_region \
                         "$tmpfile" \
                         "$tmpfile" \
-                        "${pnm_li[i]}" \
-                        "${pid_li[i]}" \
-                        "${bp}bp upstream region [${org}]" \
+                        "${pep_li[$pep_id]}" \
+                        "$pep_id" \
+                        "${bp}bp-upstream-region" \
                         "$_strand" \
                         "$_start" \
                         "$_end" \
@@ -652,8 +463,8 @@ EOS
 
     function main() {
         parse_args "$@"
-        redeclare_genome_by_genus "$genus"
         make_dir
+        redeclare_genome_by_genus "$genus"
         retrieve_blastp_genus_symbol
     }
 
