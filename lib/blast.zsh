@@ -63,7 +63,6 @@ EOS
 
     function make_dir() {
         taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function blastp_genus_symbol() {
@@ -223,7 +222,6 @@ EOS
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
         for org in ${org_li[*]}; do
-            echo "ref: all [${org}], qry: ${symbol} [${symbol_org}]"
             local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
             local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
@@ -439,7 +437,6 @@ EOS
                     tmpfile=$(mktemp)
                     local _seq; local _strand; local _start; local _end
                     read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$pep_id")
-                    echo "seqid: ${_seq}, strand: ${_strand}, start: ${_start}, end: ${_end}"
                     blastdbcmd \
                         -entry "$_seq" \
                         -db "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
