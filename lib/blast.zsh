@@ -131,8 +131,8 @@ EOS
     function retrieve_blastp() {
         touch "${taskdir}/${genus}.${symbol}.pep.fasta"
         for org in ${org_li[*]}; do
-            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
-            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
                 continue
             fi
@@ -222,8 +222,8 @@ EOS
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${cons_genus}.${symbol}.pep.fasta"
         for org in ${org_li[*]}; do
-            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
-            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${cons_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
+            local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
                 continue
             fi
@@ -256,8 +256,8 @@ EOS
 
             redeclare_genome_by_genus "$add_genus"
             for org in ${org_li[*]}; do
-                local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${add_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
-                local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+                local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db "${DATA}/${add_genus}/${org}.pep.all.fasta" -query "${DATA}/${symbol_org}/${symbol}.pep.fasta")
+                local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
                 if [ -z "$_ids" ]; then
                     continue
                 fi
@@ -338,8 +338,8 @@ EOS
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.dna_flanking_region.fasta"
         for org in ${org_li[*]}; do
-            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
-            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
                 continue
             fi
@@ -349,7 +349,7 @@ EOS
                         continue
                     fi
                     tmpfile=$(mktemp)
-                    local _seq && local _strand && local _start && local _end
+                    local _seq; local _strand; local _start; local _end
                     read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$pep_id")
                     blastdbcmd \
                         -entry "$_seq" \
@@ -424,8 +424,8 @@ EOS
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.dna_upstream_region.fasta"
         for org in ${org_li[*]}; do
-            local _blastp && _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
-            local _ids && _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
             if [ -z "$_ids" ]; then
                 continue
             fi
