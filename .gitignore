@@ -27,6 +27,7 @@
 !/job/example.zsh
 
 !/lib/
+!/lib/biotp.zsh
 !/lib/blast.zsh
 !/lib/function.zsh
 !/lib/datasets.zsh
