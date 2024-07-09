@@ -52,7 +52,7 @@ EOS
     }
 
     function send_genome_to_data() {
-        for i in "${!org_li[@]}"; do
+        for i in "${(k)org_li[@]}"; do
             echo "$i"
             acc=${acc_li[$i]}; org=${org_li[$i]}; asm=${asm_li[$i]}
             cp "${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/${acc}_${asm}_genomic.fna" \
