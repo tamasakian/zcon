@@ -15,4 +15,5 @@ for _dir in $DATA $DOC $DOWNLOAD $JOB $LIB $SCRIPT $TASKFILE; do
     mkdir -p "$_dir"
 done
 
+source "${HOME}/.zshrc"
 source "${ROOT}/venv/bin/activate"
