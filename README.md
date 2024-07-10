@@ -4,7 +4,7 @@ ZCON: A Zsh-driven Multifunctional Library for Genomics Analysis.
 
 ## Installation
 
-You can clone ZCON with `git clone`;
+You can clone ZCON with `git clone`.
 
 ```zsh
 git clone https://github.com/tamasakian/zcon.git
