@@ -16,10 +16,12 @@ git clone https://github.com/tamasakian/zcon.git
 
 - BLAST+
 - datasets
+- LAST
 - MAFFT
 - MCScanX
 - MEME
 - MUMmer4
+- rapidNJ
 - RAxML Next Generation
 - trimAl
 
