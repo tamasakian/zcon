@@ -37,3 +37,22 @@ EOS
 
     main "$@"
 }
+
+function make_taskdir() {
+    ## This function is based on make_dir_by_date.
+    function usage() {
+        cat <<EOS
+Usage: make_taskdir
+
+    This fucntion does not any args.
+
+EOS
+        exit 1
+    }
+
+    function main() {
+        taskdir=$(make_dir_by_date $TASKFILE)
+    }
+
+    main
+}
