@@ -29,10 +29,10 @@
 !/lib/
 !/lib/biotp.zsh
 !/lib/blast.zsh
-!/lib/function.zsh
 !/lib/datasets.zsh
+!/lib/function.zsh
+!/lib/jcvi.zsh
 !/lib/mafft.zsh
-!/lib/mcscan.zsh
 !/lib/meme.zsh
 !/lib/mummer.zsh
 !/lib/raxml.zsh
