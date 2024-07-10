@@ -25,8 +25,8 @@ git clone https://github.com/tamasakian/zcon.git
 
 ### PythonPackages
 
-- jcvi
-- biotp
+- BIOTP
+- JCVI
 
 If you use `venv` to manage packages; 
 
@@ -36,14 +36,14 @@ cd zcon
 python3 -m venv venv
 . venv/bin/activate
 
-## install jcvi
-pip3 install jcvi
-
-## install biotp
+## install BIOTP
 cd ..
 git clone https://github.com/tamasakian/biotp.git
 cd zcon
 pip3 install ../biotp
+
+## install JCVI
+pip3 install jcvi
 ```
 
 ## Design
