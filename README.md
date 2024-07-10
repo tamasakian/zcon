@@ -1,8 +1,10 @@
-# zcon
+# ZCON
 
 ZCON: A Zsh-driven Multifunctional Library for Genomics Analysis.
 
 ## Installation
+
+You can clone ZCON with `git clone`;
 
 ```zsh
 git clone https://github.com/tamasakian/zcon.git
@@ -12,13 +14,14 @@ git clone https://github.com/tamasakian/zcon.git
 
 ### CommandLineTools
 
-- blast
+- BLAST+
 - datasets
-- mafft
-- meme
-- mummer4
-- raxml-ng
-- trimal
+- MAFFT
+- MCScanX
+- MEME
+- MUMmer4
+- RAxML Next Generation
+- trimAl
 
 ### PythonPackages
 
@@ -81,6 +84,7 @@ zcon/
 ```
 
 ## Usage
+
 ```
 zsh job/example.zsh
 ```
