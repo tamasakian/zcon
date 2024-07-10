@@ -98,3 +98,52 @@ EOS
 
     main "$@"
 }
+
+function make_dict_pepid_by_gff() {
+    function usage() {
+        cat << EOS
+Usage: make_dict_pepid_by_gff <arg1> <arg2> <arg3> <arg4> <arg5>
+    
+    arg1: genus
+    arg2: org
+    arg3: kind
+    arg4: key
+    arg5: pattern
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 5 ]]; then
+            usage
+        fi
+        genus="$1"
+        org="${2/ /_}"
+        kind="$3"
+        key="$4"
+        pattern="$5"
+    }
+
+    function make_dir() {
+        taskdir=$(make_dir_by_date $TASKFILE)
+    }
+
+    function make_dict() {
+        python3 -m biotp make_dict_pepid \
+            "${DATA}/${genus}/${org}.genome.gff" \
+            "${taskdir}/${org}.dict_pepid.csv" \
+            "$kind" \
+            "$key" \
+            "$pattern"
+    }
+
+    function main() {
+        parse_args "$@"
+        make_dir
+        make_dict
+    }
+
+    main "$@"
+
+}
