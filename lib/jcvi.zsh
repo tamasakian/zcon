@@ -26,11 +26,6 @@ EOS
         feat=$4    
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
-    }
-
     function to_bed() {
         cd $taskdir
         for org in "$ref" "$qry"; do
@@ -68,7 +63,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_pairwise_synteny
@@ -101,11 +96,6 @@ EOS
         feat=$4
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -141,7 +131,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -174,11 +164,6 @@ EOS
         feat=$4
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -214,7 +199,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -246,11 +231,6 @@ EOS
         feat=$4
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -286,7 +266,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -411,11 +391,6 @@ EOS
         seq_li=("${@:5}")
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
-    }
-
     function to_bed() {
         cd $taskdir
         for org in "$ref" "$qry"; do
@@ -469,7 +444,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -504,11 +479,6 @@ EOS
         qry="$3"
         feat=$4
         seq_li=("${@:5}")
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -566,7 +536,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -600,11 +570,6 @@ EOS
         qry="$3"
         feat=$4
         seq_li=("${@:5}")
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -664,7 +629,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -703,11 +668,6 @@ EOS
         out="${6/ /_}"
         out_feat="$7"
         seq_li=("${@:8}")
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -794,11 +754,11 @@ EOS
 
         cd $taskdir
         echo "Nucleotide BLAST"
-        for i in "${!ref_li[@]}"; do
+        for ((i=1; i<${#ref_li[@]}+1; i++)); do
             echo "${i}, ref: ${ref_li[i]}, qry: ${qry_li[i]}"
             outflag_li[i]=false
 
-            ## 参照配列を追加する
+            ## add ref genes
             blastdbcmd \
                 -entry "${ref_li[i]}" \
                 -db ${taskdir}/${ref_us}.cds \
@@ -810,14 +770,11 @@ EOS
                 "" \
                 ""
 
-            ## フラグ
             echo "out: all [${out}], qry: ${ref_li[i]} [${ref_us}]"
-            local _blastn
-            local _id
-            _blastn=$(blastn -outfmt 6 -evalue 10 -db "${taskdir}/${out}.cds" -query "${taskdir}/${ref_li[i]}.cds")
-            _ids=$(echo "$_blastn" | cut -f 2 | head -n 2)
+            local _blastn; _blastn=$(blastn -outfmt 6 -evalue 10 -db "${taskdir}/${out}.cds" -query "${taskdir}/${ref_li[i]}.cds")
+            local _id; _ids=$(echo "$_blastn" | cut -f 2 | head -n 2)
 
-            ## クエリ追配列を追加する
+            ## add qry genes
             tmpfile=$(mktemp)
             blastdbcmd \
                 -entry "${qry_li[i]}" \
@@ -832,14 +789,14 @@ EOS
             cat "$tmpfile" >> "${ref_li[i]}.cds"
             rm "$tmpfile"
 
-            ## 外群がないときフラグ立てる
+            ## flag for outgroup genes
             if [[ ${#_ids[@]} -lt 2 ]]; then
                 echo "NOT 2 hits."
                 outflag_li[i]=true
                 continue
             fi
 
-            ## 外群配列を追加する
+            ## add outgroup genes
             for _id in $_ids; do
                 echo "Hit, out: ${_id}"
                 tmpfile=$(mktemp)
@@ -861,16 +818,17 @@ EOS
     }
 
     function construct_msa_microsynteny() {
-        for i in "${!ref_li[@]}"; do
+        for ((i=1; i<${#ref_li[@]}+1; i++)); do
             mafft "${taskdir}/${ref_li[i]}.cds" > "${taskdir}/${ref_li[i]}.cds.aln"
         done
     }
 
     function estimate_mltree() {
-        for i in "${!ref_li[@]}"; do
+        for ((i=1; i<${#ref_li[@]}+1; i++)); do
             mkdir -p "${taskdir}/trees"
             echo "${i}, outfrag: ${outflag_li[i]}"
-            ## 外群がないときスキップ
+
+            ## no outgroup genes
             if ${outflag_li[i]}; then
                 continue
             fi
@@ -879,7 +837,7 @@ EOS
                 --msa "${taskdir}/${ref_li[i]}.cds.aln" \
                 --all \
                 --model GTR \
-                --bs-trees 300 \
+                --bs-trees 500 \
                 --threads 8 \
                 --redo
             Rscript ${SCRIPT}/make_tree.R \
@@ -890,7 +848,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -938,11 +896,6 @@ EOS
         qry_us=${qry/ /_}
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
-    }
-
     function to_bed() {
         cd $taskdir
         for org in "$ref" "$qry"; do
@@ -983,7 +936,7 @@ EOS
     }
 
     function makeblastdb_microsynteny() {
-        > "${taskdir}/${ref_us}.${qry_us}.cds"
+        touch "${taskdir}/${ref_us}.${qry_us}.cds"
         cat "${taskdir}/${ref_us}.cds" >> "${taskdir}/${ref_us}.${qry_us}.cds"
         cat "${taskdir}/${qry_us}.cds" >> "${taskdir}/${ref_us}.${qry_us}.cds"
         python3 -m biotp rename_headers_to_features \
@@ -1007,11 +960,11 @@ EOS
         ref_li=()
         qry1_li=()
         qry2_li=()
-        while IFS=" " read -r index ref qry1 qry2; do
-            echo "${index}, ref: ${ref}, qry1: ${qry1}, qry2: ${qry2}"
-            ref_li[index]="$ref"
-            qry1_li[index]="$qry1"
-            qry2_li[index]="$qry2"
+        while IFS=" " read -r i ref qry1 qry2; do
+            echo "${i}, ref: ${ref}, qry1: ${qry1}, qry2: ${qry2}"
+            ref_li[i]="$ref"
+            qry1_li[i]="$qry1"
+            qry2_li[i]="$qry2"
         done < "$tmpfile"
         rm "$tmpfile"
     }
@@ -1020,11 +973,11 @@ EOS
         outflag_li=()
 
         echo "Nucleotide BLAST"
-        for i in "${!ref_li[@]}"; do
+        for ((i=1; i<${#ref_li[@]}+1; i++)); do
             echo "${i}, ref: ${ref_li[i]}, qry1: ${qry1_li[i]}, qry2: ${qry2_li[i]}"
             outflag_li[i]=false
 
-            ## 参照配列を追加する
+            ## add ref
             blastdbcmd \
                 -entry "${ref_li[i]}" \
                 -db "${taskdir}/${ref_us}.${qry_us}.cds" \
@@ -1036,12 +989,11 @@ EOS
                 "" \
                 ""
 
-            ## フラグ
             echo "out: all [${out}], qry: ${ref_li[i]} [${ref_us}]"
-            local _blastn=$(blastn -outfmt 6 -evalue 10 -db "${taskdir}/${out}.cds" -query "${taskdir}/${ref_li[i]}.cds")
-            local _id=$(echo "$_blastn" | cut -f 2 | head -n 1)
+            local _blastn; _blastn=$(blastn -outfmt 6 -evalue 10 -db "${taskdir}/${out}.cds" -query "${taskdir}/${ref_li[i]}.cds")
+            local _id; _id=$(echo "$_blastn" | cut -f 2 | head -n 1)
             
-            ## クエリ追配列を追加する(1)
+            ## add qry1
             tmpfile=$(mktemp)
             blastdbcmd \
                 -entry "${qry1_li[i]}" \
@@ -1056,7 +1008,7 @@ EOS
             cat "$tmpfile" >> "${taskdir}/${ref_li[i]}.cds"
             rm "$tmpfile"
 
-            ## クエリ追配列を追加する(2)
+            ## add qry2
             tmpfile=$(mktemp)
             blastdbcmd \
                 -entry "${qry2_li[i]}" \
@@ -1071,37 +1023,35 @@ EOS
             cat "$tmpfile" >> "${taskdir}/${ref_li[i]}.cds"
             rm "$tmpfile"
 
-            ## 外群がないときフラグ立てる
+            ## nothing
             if [ -z "$_id" ]; then
-                echo "No hit."
                 outflag_li[i]=true
                 continue
             fi
 
-            ## 外群配列を用意
-            echo "Hit, out: ${_id}"
+            ## add out
             tmpfile=$(mktemp)
             blastdbcmd \
                 -entry "$_id" \
                 -db "${taskdir}/${out}.cds" \
                 -out "$tmpfile"
 
-            ## 逆が成り立たないときフラグ立てる
+            ## reverse Nucleotide BLAST
             blastdbcmd \
                 -entry "$_id" \
                 -db "${taskdir}/${out}.cds" \
                 -out "$tmpfile"
-            local _blastn=$(blastn -outfmt 6 -evalue 10 -db "${taskdir}/${ref_us}.${qry_us}.cds" -query "$tmpfile")
-            local _id=$(echo "$_blastn" | cut -f 2 | head -n 1)
-            ## ないとき
+            local _blastn; _blastn=$(blastn -outfmt 6 -evalue 10 -db "${taskdir}/${ref_us}.${qry_us}.cds" -query "$tmpfile")
+            local _id; _id=$(echo "$_blastn" | cut -f 2 | head -n 1)
+
+            ## Not exist
             if [ -z "$_id" ]; then
-                echo "No hit."
                 outflag_li[i]=true
                 continue
             fi
-            ## あるにはあるが、一致しないとき
+
+            ## No match
             if [[ "$_id" != "${ref_li[i]}" && "$_id" != "${qry1_li[i]}" && "$_id" != "${qry2_li[i]}" ]]; then
-                echo "The reverse was incorrect."
                 outflag_li[i]=true
                 continue
             fi
@@ -1113,14 +1063,15 @@ EOS
                 "${out}" \
                 "" \
                 ""
+
             cat "$tmpfile" >> "${taskdir}/${ref_li[i]}.cds"
             rm "$tmpfile"
         done
     }
 
     function construct_msa_microsynteny() {
-        for i in "${!ref_li[@]}"; do
-            ## 外群配列がないときスキップ
+        for ((i=1; i<${#ref_li[@]}+1; i++)); do
+            ## No out
             if ${outflag_li[i]}; then
                 continue
             fi
@@ -1129,9 +1080,9 @@ EOS
     }
 
     function merge_msa_microsynteny() {
-        > "${taskdir}/merged.fasta"
-        for i in "${!ref_li[@]}"; do
-            ## 外群配列がないときスキップ
+        touch "${taskdir}/merged.fasta"
+        for ((i=1; i<${#ref_li[@]}+1; i++)); do
+            ## No out
             if ${outflag_li[i]}; then
                 continue
             fi
@@ -1157,7 +1108,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
@@ -1201,11 +1152,6 @@ EOS
         seqid_qry2="$7"
         ref_us=${ref/ /_}
         qry_us=${qry/ /_}
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-        echo "taskdir: ${taskdir}"
     }
 
     function to_bed() {
@@ -1267,7 +1213,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         to_bed
         to_cds
         search_microsynteny
