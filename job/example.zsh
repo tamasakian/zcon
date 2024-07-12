@@ -9,9 +9,14 @@ function import_libs() {
     source ${LIB}/function.zsh
     source ${LIB}/datasets.zsh
     source ${LIB}/blast.zsh
-    source ${LIB}/mcscan.zsh
+    source ${LIB}/mafft.zsh
+    source ${LIB}/trimal.zsh
+    source ${LIB}/raxml.zsh
+    source ${LIB}/jcvi.zsh
+    source ${LIB}/mcscanx.zsh
     source ${LIB}/mummer.zsh
     source ${LIB}/meme.zsh
+    source ${LIB}/biotp.zsh
 }
 
 ## Job
