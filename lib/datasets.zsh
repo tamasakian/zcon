@@ -34,7 +34,9 @@ EOS
     }
     
     function declare_genome_by_genus() {
-        acc_li=() org_li=() asm_li=()
+        acc_li=()
+        org_li=()
+        asm_li=()
 
         tmpfile=$(mktemp)
         python3 -m biotp output_acc_org_asm \
