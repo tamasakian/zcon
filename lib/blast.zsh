@@ -94,10 +94,6 @@ EOS
         evalue=$4
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.blastp"
         for org in ${org_li[*]}; do
@@ -114,7 +110,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         redeclare_genome_by_genus "$genus"
         blastp_genus_symbol
     }
@@ -157,10 +153,6 @@ EOS
         done
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function retrieve_blastp() {
         touch "${taskdir}/${genus}.${symbol}.pep.fasta"
         for org in ${org_li[*]}; do
@@ -194,7 +186,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         redeclare_genome_by_genus "$genus"
         retrieve_blastp
     }
@@ -246,10 +238,6 @@ EOS
         for ((i=1; i<${#_pli[@]}; i+=2)); do
             pep_li[${_pli[i]}]="${_pli[i+1]}"
         done
-    }
-
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
     }
 
     function retrieve_blastp_genus_symbol() {
@@ -320,7 +308,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         redeclare_genome_by_genus "$cons_genus"
         retrieve_blastp_genus_symbol
         addn_genus_symbol
@@ -364,10 +352,6 @@ EOS
         done
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.dna_flanking_region.fasta"
         for org in ${org_li[*]}; do
@@ -407,7 +391,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         redeclare_genome_by_genus "$genus"
         retrieve_blastp_genus_symbol
     }
@@ -450,10 +434,6 @@ EOS
         done
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function retrieve_blastp_genus_symbol() {
         touch "${taskdir}/${genus}.${symbol}.dna_upstream_region.fasta"
         for org in ${org_li[*]}; do
@@ -493,7 +473,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         redeclare_genome_by_genus "$genus"
         retrieve_blastp_genus_symbol
     }
