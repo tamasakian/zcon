@@ -44,7 +44,7 @@ function make_taskdir() {
         cat <<EOS
 Usage: make_taskdir
 
-    This fucntion does not any args.
+    This fucntion does not need any args.
 
 EOS
         exit 1
