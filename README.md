@@ -54,34 +54,24 @@ pip3 install jcvi
 zcon/
 ├── data/
 │   └── input_files
-│
 ├── doc/
 │   └── archive_files
-│
 ├── download/
 │   └── raw_data
-│
 ├── job/
 │   ├── profile.zsh
 │   ├── example.zsh
-│   │
 │   └── job_files
-│
 ├── lib/
 │   └── function_files
-│
 ├── script/
 │   ├── data/
 │   │   └── input_files
-│   │
 │   ├── doc/
 │   │   └── output_files
-│   │
 │   └── job_files
-│
 ├── taskfile/
 │   └── output_files
-│
 └── venv/
 ```
 
