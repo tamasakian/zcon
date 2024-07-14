@@ -22,10 +22,6 @@ EOS
         org="${2/ /_}"
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function generate_introns_gff() {
         python3 -m biotp generate_coordinate_all_introns \
             "${DATA}/${genus}/${org}.genome.gff" \
@@ -41,7 +37,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         generate_introns_gff
         generate_introns_fasta
     }
@@ -67,10 +63,6 @@ EOS
         genus="$1"
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function generate_introns_gff() {
         for org in ${org_li[*]}; do
             python3 -m biotp generate_coordinate_all_introns \
@@ -90,7 +82,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         redeclare_genome_by_genus "$genus"
         generate_introns_gff
         generate_introns_fasta
@@ -125,10 +117,6 @@ EOS
         pattern="$5"
     }
 
-    function make_dir() {
-        taskdir=$(make_dir_by_date $TASKFILE)
-    }
-
     function make_dict() {
         python3 -m biotp make_dict_pepid \
             "${DATA}/${genus}/${org}.genome.gff" \
@@ -140,7 +128,7 @@ EOS
 
     function main() {
         parse_args "$@"
-        make_dir
+        make_taskdir
         make_dict
     }
 
