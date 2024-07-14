@@ -39,7 +39,7 @@ EOS
 }
 
 function make_taskdir() {
-    ## This function is based on make_dir_by_date.
+    ## This function is based on make_dir_by_date
     function usage() {
         cat <<EOS
 Usage: make_taskdir
