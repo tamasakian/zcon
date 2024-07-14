@@ -25,11 +25,13 @@ function download_meme_databases() {
 }
 
 function fimo_dna_upstream_region_genus_symbol_test() {
+    ## This function is based on construct_dna_upstream_region_genus_symbol
+    ## which is located in blast.zsh
     function usage() {
         cat <<EOS
 Usage:  fimo_dna_upstream_region <arg1> <arg2> <arg3> <arg4> <arg5> <arg6> <arg7> (<arg8> <arg9> ...)
 
-    arg1: database
+    arg1: motif_filename
     arg2: qvalue (fimo)
 
     arg3: genus
@@ -49,24 +51,24 @@ EOS
         if [[ $# -lt 9 ]]; then
             usage
         fi
-        database="$1"
+        motif_filename="$1"
         qvalue=$2
     }
 
-    function scan_motif() {
+    function find_individual_motif_occurrences() {
         fimo \
             --o "${taskdir}/fimo_out" \
             --thresh $qvalue \
             --qv-thresh \
             --verbosity 1 \
-            "$database" \
+            "$motif_filename" \
             "${taskdir}/${genus}.${symbol}.dna_upstream_region.fasta"
     }
     
     function main() {
         parse_args "$@"
         construct_dna_upstream_region_genus_symbol "${@:3}"
-        scan_motif
+        find_individual_motif_occurrences
     }
 
     main "$@"
