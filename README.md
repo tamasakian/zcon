@@ -50,6 +50,8 @@ pip3 install jcvi
 
 ## Design
 
+### Overview
+
 ```
 zcon/
 ├── data/
@@ -74,6 +76,41 @@ zcon/
 │   └── output_files
 └── venv/
 ```
+
+### Directory
+
+#### DATA
+
+Manage the input data.
+
+#### DOC
+
+Archive the most important files of the output data.
+
+#### DOWNLOAD
+
+Manage the raw data.
+
+#### JOB
+
+Manage the actual zsh scripts to run.
+
+#### LIB
+
+Manage the zsh scripts with functions defined for Genomics Analysis.
+
+#### SCRIPT
+
+Perform individual analysis or visualization.
+
+#### TASKFILE
+
+Manage the output data.
+
+#### VENV
+
+Manage the python packages
+
 
 ## Usage
 
