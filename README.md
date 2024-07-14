@@ -2,6 +2,13 @@
 
 ZCON: A Zsh-driven Multifunctional Library for Genomics Analysis.
 
+## Contents
+
+1. [Installation instructions](#installation)
+2. [Dependencies](#dependencies)
+3. [Directory structure](#directory)
+4. [Usage](#usage)
+
 ## Installation
 
 You can clone ZCON with `git clone`.
