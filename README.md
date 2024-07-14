@@ -48,7 +48,7 @@ pip3 install ../biotp
 pip3 install jcvi
 ```
 
-## Design
+## Directory
 
 ### Overview
 
@@ -76,8 +76,6 @@ zcon/
 │   └── output_files
 └── venv/
 ```
-
-### Directory
 
 #### DATA
 
@@ -109,7 +107,7 @@ Manage the output data.
 
 #### VENV
 
-Manage the python packages
+Manage the python packages.
 
 
 ## Usage
