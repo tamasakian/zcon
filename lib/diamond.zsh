@@ -118,14 +118,11 @@ EOS
     }
 
     function blastp_with_diamond() {
-        touch matches.tsv
         diamond blastp \
             -d "${taskdir}/database" \
             -q "${taskdir}/rec.fasta" \
             -o "${taskdir}/matches.tsv"
     }
-
-
 
     function main() {
         parse_args "$@"
