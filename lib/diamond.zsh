@@ -114,7 +114,7 @@ EOS
         done
         diamond makedb \
             --in "${taskdir}/reference.fasta" \
-            -d "database"
+            -d "${taskdir}/database"
     }
 
     function blastp_with_diamond() {
