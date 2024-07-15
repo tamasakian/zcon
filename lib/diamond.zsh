@@ -114,14 +114,15 @@ EOS
         done
         diamond makedb \
             --in "${taskdir}/reference.fasta" \
-            -d "${taskdir}/database"
+            --db "${taskdir}/database"
     }
 
     function blastp_with_diamond() {
         diamond blastp \
-            -d "${taskdir}/database" \
-            -q "${taskdir}/rec.fasta" \
-            -o "${taskdir}/matches.tsv"
+            --db "${taskdir}/database" \
+            --query "${taskdir}/rec.fasta" \
+            --out "${taskdir}/matches.tsv" \
+            
     }
 
     function main() {
