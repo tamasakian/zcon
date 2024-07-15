@@ -110,7 +110,7 @@ EOS
     function makedb_reference() {
         touch "${taskdir}/reference.fasta"
         for ref in rec grp ogp; do
-            cat "${ref}.fasta" >> "${taskdir}/reference.fasta"
+            cat "${taskdir}/${ref}.fasta" >> "${taskdir}/reference.fasta"
         done
         diamond makedb \
             --in "${taskdir}/reference.fasta" \
