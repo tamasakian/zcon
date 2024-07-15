@@ -225,7 +225,7 @@ EOS
         num=$2
 
         addn_genus=()
-        for ((i=1; i<num+1; i++)); do
+        for ((i=1; i<=num; i++)); do
             addn_genus[i]="${@:2+i:1}"
         done
 
