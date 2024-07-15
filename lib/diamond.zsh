@@ -108,24 +108,21 @@ EOS
     }
 
     function makedb_reference() {
-        cd ${taskdir}
-        touch reference.fasta
+        touch "${taskdir}/reference.fasta"
         for ref in rec grp ogp; do
-            cat ${ref}.fasta >> ${taskdir}/reference.fasta
+            cat "${ref}.fasta" >> "${taskdir}/reference.fasta"
         done
         diamond makedb \
-            --in rec.fasta \
-            -d database
+            --in "${taskdir}/reference.fasta" \
+            -d "database"
     }
 
     function blastp_with_diamond() {
-        cd "${taskdir}"
         touch matches.tsv
         diamond blastp \
-            -d database \
-            -q reference.fasta \
-            -o matches.tsv
-        cd "${ROOT}"
+            -d "${taskdir}/database" \
+            -q "${taskdir}/rec.fasta" \
+            -o "${taskdir}/matches.tsv"
     }
 
 
