@@ -30,6 +30,7 @@
 !/lib/biotp.zsh
 !/lib/blast.zsh
 !/lib/datasets.zsh
+!/lib/diamond.zsh
 !/lib/function.zsh
 !/lib/jcvi.zsh
 !/lib/mafft.zsh
