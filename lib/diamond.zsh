@@ -117,7 +117,8 @@ EOS
         diamond blastp \
             --db "${taskdir}/database" \
             --query "${taskdir}/rec.fasta" \
-            --out "${taskdir}/matches.tsv"
+            --out "${taskdir}/matches.tsv" \
+            --max-target-seqs 100
     }
 
     function main() {
