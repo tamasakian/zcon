@@ -158,7 +158,7 @@ EOS
     }
 
     function slice_hgt() {
-        python3 -m \
+        python3 -m slice_rgo_by_hgt\
             "${taskdir}/matches.tsv" \
             "${taskdir}/hgt_matches.tsv" \
             80
