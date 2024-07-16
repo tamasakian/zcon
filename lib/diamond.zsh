@@ -3,13 +3,9 @@
 #### Function libs with DIAMOND
 
 function output_blastp_by_rgo() {
-    ## rgo is;
-    ## r: recipient, rec;
-    ## g: group, grp;
-    ## o: outgroup, ogp
     function usage() {
         cat <<EOS
-Usage: output_blastp_by_3_genus <arg1> (<arg2> ... <arg(1+x)>) <arg(2+x)> (<arg(3+x)> ... <arg(2+x+y)>) <arg(3+x+y)> (<arg(4+x+y)> ... <arg(3+x+y+z)>) <arg(4+x+y+z)> 
+Usage: output_blastp_by_rgo <arg1> (<arg2> ... <arg(1+x)>) <arg(2+x)> (<arg(3+x)> ... <arg(2+x+y)>) <arg(3+x+y)> (<arg(4+x+y)> ... <arg(3+x+y+z)>) <arg(4+x+y+z)> 
 
     arg1: num_rec [x]
     arg2: org_rec
@@ -121,8 +117,7 @@ EOS
         diamond blastp \
             --db "${taskdir}/database" \
             --query "${taskdir}/rec.fasta" \
-            --out "${taskdir}/matches.tsv" \
-            
+            --out "${taskdir}/matches.tsv"
     }
 
     function main() {
@@ -133,6 +128,45 @@ EOS
         merge_ogp_fasta
         makedb_reference
         blastp_with_diamond
+    }
+
+    main "$@"
+}
+
+function search_hgt_by_rgo() {
+    ## This function is based on output_blastp_by_rgo
+    function usage() {
+        cat <<EOS
+Usage: search_hgt_by_rgo <arg1> (<arg2> ... <arg(1+x)>) <arg(2+x)> (<arg(3+x)> ... <arg(2+x+y)>) <arg(3+x+y)> (<arg(4+x+y)> ... <arg(3+x+y+z)>) <arg(4+x+y+z)> 
+
+    arg1: num_rec [x]
+    arg2: org_rec
+    ...
+
+    arg(2+x): num_grp [y]
+    arg(3+x): org_grp
+    ...
+
+    arg(3+x+y): num_ogp [z]
+    arg(4+x+y): org_ogp
+    ...
+
+    arg(4+x+y+z): evalue
+
+EOS
+        exit 1
+    }
+
+    function slice_hgt() {
+        python3 -m \
+            "${taskdir}/matches.tsv" \
+            "${taskdir}/hgt_matches.tsv" \
+            80
+    }
+
+    function main() {
+        output_blastp_by_rgo "$@"
+        slice_hgt
     }
 
     main "$@"
