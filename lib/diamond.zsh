@@ -118,7 +118,7 @@ EOS
             --db "${taskdir}/database" \
             --query "${taskdir}/rec.fasta" \
             --out "${taskdir}/matches.tsv" \
-            --max-target-seqs 100
+            --max-target-seqs 25
     }
 
     function main() {
@@ -162,7 +162,7 @@ EOS
         python3 -m biotp slice_rgo_by_hgt \
             "${taskdir}/matches.tsv" \
             "${taskdir}/hgt_matches.tsv" \
-            80
+            0
     }
 
     function main() {
