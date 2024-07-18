@@ -40,7 +40,7 @@ EOS
     function search_orthogroups_with_orgs() {
         orthofinder \
             -t 128 \
-            -a 16 \
+            -a 8 \
             -f "$taskdir"
     }
 
