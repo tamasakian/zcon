@@ -162,7 +162,7 @@ EOS
         python3 -m biotp slice_rgo_by_hgt \
             "${taskdir}/matches.tsv" \
             "${taskdir}/hgt_matches.tsv" \
-            80
+            60
     }
 
     function main() {
