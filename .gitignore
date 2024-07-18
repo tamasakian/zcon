@@ -36,5 +36,6 @@
 !/lib/mafft.zsh
 !/lib/meme.zsh
 !/lib/mummer.zsh
+!/lib/orthofinder.zsh
 !/lib/raxml.zsh
 !/lib/trimal.zsh
