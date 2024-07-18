@@ -38,7 +38,7 @@ EOS
     }
 
     function search_orthogroups_with_orgs() {
-        oethofinder \
+        orthofinder \
             -t 128 \
             -a 16 \
             -f "$taskdir" \
