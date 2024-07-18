@@ -41,9 +41,7 @@ EOS
         orthofinder \
             -t 128 \
             -a 16 \
-            -f "$taskdir" \
-            -M MSA \
-            -T "raxml-ng"
+            -f "$taskdir"
     }
 
     function main() {
