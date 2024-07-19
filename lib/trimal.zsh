@@ -76,3 +76,37 @@ EOS
 
     main "$@"
 }
+
+function trim_sco_msa() {
+    ## This function is based on construct_sco_msa
+    ## which is located in mafft.zsh
+    function usage() {
+        cat <<EOS
+Usage: trim_sco_msa <arg1> <arg2> ...
+
+    arg1: num (more than 3)
+    arg2: org
+    ...
+
+EOS
+        exit 1
+    }
+
+    function trim_msa() {
+        scodir="${taskdir}/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences"
+        for file in ${scodir}/*.aln; do
+            filename=${file:t:r}
+            trimal \
+                -in "${scodir}/${filename}.aln" \
+                -out "${scodir}/${filename}.trim.aln" \
+                -automted1
+        done
+    }
+
+    function main() {
+        construct_sco_msa "$@"
+        trim_msa
+    }
+
+    main "$@"
+}
