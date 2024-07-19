@@ -90,8 +90,8 @@ EOS
     function construct_msa() {
         scodir="${taskdir}/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences"
         for file in ${scodir}/*.fa; do
-            filename=${file:t:r}
-            mafft "${filename}.fa" >> "${filename}.aln"
+            filename=${file:t}
+            mafft "${scodir}/${filename}.fa" >> "${scodir}/${filename}.aln"
         done
     }
 
