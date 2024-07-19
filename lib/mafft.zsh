@@ -72,3 +72,35 @@ EOS
 }
 
 
+function construct_sco_msa() {
+    ## This function is based on search_orthogroups
+    ## which is located in orthofinder.zsh
+    function usage() {
+        cat <<EOS
+Usage: construct_sco_msa <arg1> <arg2> ...
+
+    arg1: num (more than 3)
+    arg2: org
+    ...
+
+EOS
+        exit 1
+    }
+
+    function construct_msa() {
+        scodir="${taskdir}/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences"
+        for file in ${scodir}/*.fa; do
+            filename=${file:t:r}
+            mafft "${filename}.fa" >> "${filename}.aln"
+        done
+    }
+
+    function main() {
+        search_orthogroups "$@"
+        construct_msa
+    }
+
+    main "$@"
+}
+
+
