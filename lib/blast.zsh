@@ -480,3 +480,96 @@ EOS
 
     main "$@"
 }
+
+function construct_dna_intron_blastp_genus_symbol() {
+    ## This funcion is based on construct_all_introns_by_genus
+    ## which is located in biotp.zsh
+    function usage() {
+        cat <<EOS
+Usage:  construct_dna_intron_blastp_genus_symbol <arg1> <arg2> <arg3> <arg4> <arg5> (<arg6> <arg7> ...)
+
+    arg1: genus
+    arg2: symbol
+    arg3: symbol_org
+    arg4: evalue
+    arg5: num
+
+    arg5: protein_id
+    arg6: protein_name
+    ...
+    
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 6 ]]; then
+            usage
+        fi
+        genus="$1"
+        symbol="$2"
+        symbol_org="${3/ /_}"
+        evalue=$4
+        num=$5
+        typeset -g -A pep_li
+        local _pli; _pli=("${@:6}")
+        for ((i=1; i<${#_pli[@]}; i+=2)); do
+            pep_li[${_pli[i]}]="${_pli[i+1]}"
+        done
+    }
+
+    function makeblastdb_all_introns() {
+        for org in ${org_li[*]}; do
+            makeblastdb \
+                -in "${taskdir}/${org}.intron.all.fasta" \
+                -dbtype nucl -hash_index -parse_seqids
+        done
+    }
+
+    function retrieve_blastp_genus_symbol() {
+        for ((i=1; i<=$num; i++)); do
+            touch "${taskdir}/${genus}.intron.${i}.fasta"
+        done 
+
+        for org in ${org_li[*]}; do
+            local _blastp; _blastp=$(blastp -outfmt 6 -evalue $evalue -db ${DATA}/${genus}/${org}.pep.all.fasta -query ${DATA}/${symbol_org}/${symbol}.pep.fasta)
+            local _ids; _ids=$(echo "$_blastp" | cut -f 2 | sort -u)
+            if [ -z "$_ids" ]; then
+                continue
+            fi
+            for _id in ${(f)_ids}; do
+                for pep_id in ${(k)pep_li}; do
+                    if [[ "$_id" != "$pep_id" ]]; then
+                        continue
+                    fi
+                    for ((i=1; i<=$num; i++)); do
+                        tmpfile=$(mktemp)
+                        blastdbcmd \
+                            -entry "${_id}_intron_${i}" \
+                            -db "${taskdir}/${org}.intron.all.fasta" \
+                            -out "$tmpfile"
+                        python3 -m biotp rename_header \
+                            "$tmpfile" \
+                            "$tmpfile" \
+                            "${pep_li[$pep_id]}_intron_${i}" \
+                            "" \
+                            ""
+                        cat "$tmpfile" >> "${taskdir}/${genus}.intron.${i}.fasta"
+                        rm "$tmpfile"
+                    done
+                done
+            done
+        done
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        redeclare_genome_by_genus "$genus"
+        construct_all_introns_by_genus "$genus"
+        makeblastdb_all_introns
+        retrieve_blastp_genus_symbol
+    }
+
+    main "$@"
+}
