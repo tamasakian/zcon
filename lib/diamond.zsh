@@ -172,3 +172,129 @@ EOS
 
     main "$@"
 }
+
+function detect_hgt_by_rgo() {
+    ## This function is based on search_hgt_by_rgo
+    function usage() {
+        cat <<EOS
+Usage: detect_hgt_by_rgo <arg1> (<arg2> ... <arg(1+x)>) <arg(2+x)> (<arg(3+x)> ... <arg(2+x+y)>) <arg(3+x+y)> (<arg(4+x+y)> ... <arg(3+x+y+z)>) <arg(4+x+y+z)> 
+
+    arg1: num_rec [x]
+    arg2: org_rec
+    ...
+
+    arg(2+x): num_grp [y]
+    arg(3+x): org_grp
+    ...
+
+    arg(3+x+y): num_ogp [z]
+    arg(4+x+y): org_ogp
+    ...
+
+    arg(4+x+y+z): evalue
+
+EOS
+        exit 1
+    }
+
+    function merge_rec_cds_fasta() {
+        touch "${taskdir}/rec.cds.fasta"
+        for org in "${org_recs[@]}"; do
+            genus=${org%%_*}
+            tmpfile=$(mktemp)
+            python3 -m biotp rename_headers_feature \
+                "${DATA}/${genus}/${org}.cds.all.fasta" \
+                "$tmpfile" \
+                "protein_id"
+            python3 -m biotp prefix_to_headers \
+                "$tmpfile" \
+                "$tmpfile" \
+                "rec"
+            cat "$tmpfile" >> "${taskdir}/rec.cds.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function merge_grp_cds_fasta() {
+        touch "${taskdir}/grp.cds.fasta"
+        for org in "${org_grps[@]}"; do
+            genus=${org%%_*}
+            tmpfile=$(mktemp)
+            python3 -m biotp rename_headers_feature \
+                "${DATA}/${genus}/${org}.cds.all.fasta" \
+                "$tmpfile" \
+                "protein_id"
+            python3 -m biotp prefix_to_headers \
+                "$tmpfile" \
+                "$tmpfile" \
+                "grp"
+            cat "$tmpfile" >> "${taskdir}/grp.cds.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function merge_ogp_cds_fasta() {
+        touch "${taskdir}/ogp.cds.fasta"
+        for org in "${org_ogps[@]}"; do
+            genus=${org%%_*}
+            tmpfile=$(mktemp)
+            python3 -m biotp rename_headers_feature \
+                "${DATA}/${genus}/${org}.cds.all.fasta" \
+                "$tmpfile" \
+                "protein_id"
+            python3 -m biotp prefix_to_headers \
+                "$tmpfile" \
+                "$tmpfile" \
+                "ogp"
+            cat "$tmpfile" >> "${taskdir}/ogp.cds.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function merge_reference() {
+        touch "${taskdir}/reference.cds.fasta"
+        for ref in rec grp ogp; do
+            cat "${taskdir}/${ref}.fasta" >> "${taskdir}/reference.cds.fasta"
+        done
+    }
+
+    function slice_fasta() {
+        _recs=($(cut -f 1 hgt_matched.tsv | sort -u))
+        python3 -m biotp slice_records_by_names \
+            "${taskdir}/rec.cds.fasta" \
+            "${taskdir}/rec.cds.fasta" \
+            "${_recs[@]}"
+        _references=($(cut -f 2 hgt_matched.tsv | sort -u))
+        python3 -m biotp slice_records_by_names \
+            "${taskdir}/reference.cds.fasta" \
+            "${taskdir}/reference.cds.fasta" \
+            "${_references[@]}"
+    }
+
+    function makeblastdb_reference() {
+        makeblastdb \
+            -in "${taskdir}/reference.cds.fasta" \
+            -dbtype nucl -hash_index -parse_seqids
+    }
+
+    function detect_hgt_by_blastn() {
+        blastn \
+            -outfmt 6 -evalue 10 \
+            -db "${taskdir}/reference.cds.fasta" \
+            -query "${taskdir}/rec.cds.fasta" \
+            -out "${taskdir}/hgt.tsv"
+    }
+
+    function main() {
+        search_hgt_by_rgo "$@"
+        merge_rec_cds_fasta
+        merge_grp_cds_fasta
+        merge_ogp_cds_fasta
+        merge_reference
+        slice_fasta
+        makeblastdb_reference
+        detect_hgt_by_blastn
+    }
+
+    main "$@"
+}
