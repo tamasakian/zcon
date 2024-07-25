@@ -201,17 +201,18 @@ EOS
         touch "${taskdir}/rec.cds.fasta"
         for org in "${org_recs[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m biotp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile" \
+                "$tmpfile1" \
                 "protein_id"
             python3 -m biotp prefix_to_headers \
-                "$tmpfile" \
-                "$tmpfile" \
+                "$tmpfile1" \
+                "$tmpfile2" \
                 "rec"
-            cat "$tmpfile" >> "${taskdir}/rec.cds.fasta"
-            rm "$tmpfile"
+            cat "$tmpfile2" >> "${taskdir}/rec.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
@@ -219,17 +220,18 @@ EOS
         touch "${taskdir}/grp.cds.fasta"
         for org in "${org_grps[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m biotp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile" \
+                "$tmpfile1" \
                 "protein_id"
             python3 -m biotp prefix_to_headers \
-                "$tmpfile" \
-                "$tmpfile" \
+                "$tmpfile1" \
+                "$tmpfile2" \
                 "grp"
-            cat "$tmpfile" >> "${taskdir}/grp.cds.fasta"
-            rm "$tmpfile"
+            cat "$tmpfile2" >> "${taskdir}/grp.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
@@ -237,20 +239,20 @@ EOS
         touch "${taskdir}/ogp.cds.fasta"
         for org in "${org_ogps[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m biotp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile" \
+                "$tmpfile1" \
                 "protein_id"
             python3 -m biotp prefix_to_headers \
-                "$tmpfile" \
-                "$tmpfile" \
+                "$tmpfile1" \
+                "$tmpfile2" \
                 "ogp"
-            cat "$tmpfile" >> "${taskdir}/ogp.cds.fasta"
-            rm "$tmpfile"
+            cat "$tmpfile2" >> "${taskdir}/ogp.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
-
     function merge_reference() {
         touch "${taskdir}/reference.cds.fasta"
         for ref in rec grp ogp; do
