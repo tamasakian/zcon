@@ -363,14 +363,14 @@ EOS
         for org in "${org_recs[@]}"; do
             genus=${org%%_*}
             tmpfile=$(mktemp)
-            # python3 -m biotp rename_headers_feature \
-            #     "${DATA}/${genus}/${org}.cds.all.fasta" \
+            python3 -m biotp rename_headers_feature \
+                "${DATA}/${genus}/${org}.cds.all.fasta" \
+                "$tmpfile" \
+                "protein_id"
+            # python3 -m biotp prefix_to_headers \
             #     "$tmpfile" \
-            #     "protein_id"
-            python3 -m biotp prefix_to_headers \
-                "$tmpfile" \
-                "$tmpfile" \
-                "rec"
+            #     "$tmpfile" \
+            #     "rec"
             cat "$tmpfile" >> "${taskdir}/rec.cds.fasta"
             rm "$tmpfile"
         done
