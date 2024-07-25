@@ -254,7 +254,7 @@ EOS
     function merge_reference() {
         touch "${taskdir}/reference.cds.fasta"
         for ref in rec grp ogp; do
-            cat "${taskdir}/${ref}.fasta" >> "${taskdir}/reference.cds.fasta"
+            cat "${taskdir}/${ref}.cds.fasta" >> "${taskdir}/reference.cds.fasta"
         done
     }
 
@@ -297,4 +297,88 @@ EOS
     }
 
     main "$@"
+}
+
+function hoge() {
+    function usage() {
+        cat <<EOS
+Usage: output_blastp_by_rgo <arg1> (<arg2> ... <arg(1+x)>) <arg(2+x)> (<arg(3+x)> ... <arg(2+x+y)>) <arg(3+x+y)> (<arg(4+x+y)> ... <arg(3+x+y+z)>) <arg(4+x+y+z)> 
+
+    arg1: num_rec [x]
+    arg2: org_rec
+    ...
+
+    arg(2+x): num_grp [y]
+    arg(3+x): org_grp
+    ...
+
+    arg(3+x+y): num_ogp [z]
+    arg(4+x+y): org_ogp
+    ...
+
+    arg(4+x+y+z): evalue
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 6 ]]; then
+            usage
+        fi
+
+        num_rec=$1
+        shift
+        org_recs=()
+        for ((i=1; i<=num_rec; i++)); do
+            org_recs[i]="${1// /_}"
+            echo "${i}:${org_recs[i]}"
+            shift
+        done
+
+        num_grp=$1
+        shift
+        org_grps=()
+        for ((j=1; j<=num_grp; j++)); do
+            org_grps[j]="${1// /_}"
+            echo "${j}:${org_grps[j]}"
+            shift
+        done
+
+        num_ogp=$1
+        shift
+        org_ogps=()
+        for ((k=1; k<=num_ogp; k++)); do
+            org_ogps[k]="${1// /_}"
+            echo "${k}:${org_ogps[k]}"
+            shift
+        done
+
+        evalue=$1
+        echo "evalue:${evalue}"
+    }
+
+    function merge_rec_cds_fasta() {
+        touch "${taskdir}/rec.cds.fasta"
+        for org in "${org_recs[@]}"; do
+            genus=${org%%_*}
+            tmpfile=$(mktemp)
+            python3 -m biotp rename_headers_feature \
+                "${DATA}/${genus}/${org}.cds.all.fasta" \
+                "$tmpfile" \
+                "protein_id"
+            python3 -m biotp prefix_to_headers \
+                "$tmpfile" \
+                "$tmpfile" \
+                "rec"
+            cat "$tmpfile" >> "${taskdir}/rec.cds.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        merge_rec_cds_fasta
+    }    
 }
