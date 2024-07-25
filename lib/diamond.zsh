@@ -285,7 +285,10 @@ EOS
             -outfmt 6 -evalue 10 \
             -db "${taskdir}/ref.cds.fasta" \
             -query "${taskdir}/qry.cds.fasta" \
-            -out "${taskdir}/hgt.tsv"
+            -out "${taskdir}/results.tsv"
+        python3 -m biotp detect_hgt \
+            "${taskdir}/results.tsv" \
+            "${taskdir}/hgt.tsv"
     }
 
     function main() {
