@@ -71,36 +71,38 @@ EOS
     main "$@" 
 }
 
-
-function construct_sco_msa() {
-    ## This function is based on search_orthogroups
-    ## which is located in orthofinder.zsh
+function construct_msa_intron_blastp_genus_symbol() {
+    ## This function is based on construct_dna_intron_blastp_genus_symbol
+    ## which is located in blast.zsh
     function usage() {
         cat <<EOS
-Usage: construct_sco_msa <arg1> <arg2> ...
+Usage:  construct_msa_intron_blastp_genus_symbol <arg1> <arg2> <arg3> <arg4> <arg5> (<arg6> <arg7> ...)
 
-    arg1: num (more than 3)
-    arg2: org
+    arg1: genus
+    arg2: symbol
+    arg3: symbol_org
+    arg4: evalue
+    arg5: num
+
+    arg5: protein_id
+    arg6: protein_name
     ...
-
+    
 EOS
         exit 1
     }
 
     function construct_msa() {
-        scodir="${taskdir}/OrthoFinder/Results_*/Single_Copy_Orthologue_Sequences"
-        for file in ${scodir}/*.fa; do
-            filename=${file:t:r}
-            mafft "${scodir}/${filename}.fa" >> "${scodir}/${filename}.aln"
-        done
+        for ((i=1; i<=$num; i++)); do
+            mafft "${taskdir}/${genus}.intron.${i}.fasta" > "${taskdir}/${genus}.intron.${i}.aln"
+        done 
     }
 
     function main() {
-        search_orthogroups "$@"
+        construct_dna_intron_blastp_genus_symbol "$@"
         construct_msa
     }
 
     main "$@"
 }
-
 
