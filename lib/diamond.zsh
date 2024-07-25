@@ -253,6 +253,7 @@ EOS
             rm "$tmpfile1" "$tmpfile2"
         done
     }
+
     function merge_reference() {
         touch "${taskdir}/reference.cds.fasta"
         for ref in rec grp ogp; do
@@ -264,26 +265,26 @@ EOS
         _recs=($(cut -f 1 "${taskdir}/hgt_matches.tsv" | sort -u))
         python3 -m biotp slice_records_by_names \
             "${taskdir}/rec.cds.fasta" \
-            "${taskdir}/rec.cds.fasta" \
+            "${taskdir}/qry.cds.fasta" \
             "${_recs[@]}"
         _references=($(cut -f 2 "${taskdir}/hgt_matches.tsv" | sort -u))
         python3 -m biotp slice_records_by_names \
             "${taskdir}/reference.cds.fasta" \
-            "${taskdir}/reference.cds.fasta" \
+            "${taskdir}/ref.cds.fasta" \
             "${_references[@]}"
     }
 
     function makeblastdb_reference() {
         makeblastdb \
-            -in "${taskdir}/reference.cds.fasta" \
+            -in "${taskdir}/ref.cds.fasta" \
             -dbtype nucl -hash_index -parse_seqids
     }
 
     function detect_hgt_by_blastn() {
         blastn \
             -outfmt 6 -evalue 10 \
-            -db "${taskdir}/reference.cds.fasta" \
-            -query "${taskdir}/rec.cds.fasta" \
+            -db "${taskdir}/ref.cds.fasta" \
+            -query "${taskdir}/qry.cds.fasta" \
             -out "${taskdir}/hgt.tsv"
     }
 
