@@ -259,12 +259,12 @@ EOS
     }
 
     function slice_fasta() {
-        _recs=($(cut -f 1 "${taskdir}/hgt_matched.tsv" | sort -u))
+        _recs=($(cut -f 1 "${taskdir}/hgt_matches.tsv" | sort -u))
         python3 -m biotp slice_records_by_names \
             "${taskdir}/rec.cds.fasta" \
             "${taskdir}/rec.cds.fasta" \
             "${_recs[@]}"
-        _references=($(cut -f 2 "${taskdir}/hgt_matched.tsv" | sort -u))
+        _references=($(cut -f 2 "${taskdir}/hgt_matches.tsv" | sort -u))
         python3 -m biotp slice_records_by_names \
             "${taskdir}/reference.cds.fasta" \
             "${taskdir}/reference.cds.fasta" \
