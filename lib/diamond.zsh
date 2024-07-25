@@ -262,16 +262,16 @@ EOS
     }
 
     function slice_fasta() {
-        _recs=($(cut -f 1 "${taskdir}/hgt_matches.tsv" | sort -u))
+        recs=($(cut -f 1 "${taskdir}/hgt_matches.tsv" | sort -u))
         python3 -m biotp slice_records_by_names \
             "${taskdir}/rec.cds.fasta" \
             "${taskdir}/qry.cds.fasta" \
-            "${_recs[@]}"
-        _references=($(cut -f 2 "${taskdir}/hgt_matches.tsv" | sort -u))
+            "${recs[@]}"
+        references=($(cut -f 2 "${taskdir}/hgt_matches.tsv" | sort -u))
         python3 -m biotp slice_records_by_names \
             "${taskdir}/reference.cds.fasta" \
             "${taskdir}/ref.cds.fasta" \
-            "${_references[@]}"
+            "${references[@]}"
     }
 
     function makeblastdb_reference() {
