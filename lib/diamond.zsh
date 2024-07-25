@@ -381,4 +381,6 @@ EOS
         make_taskdir
         merge_rec_cds_fasta
     }    
+
+    main "$@"
 }
