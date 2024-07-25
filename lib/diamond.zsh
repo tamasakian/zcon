@@ -362,17 +362,18 @@ EOS
         touch "${taskdir}/rec.cds.fasta"
         for org in "${org_recs[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m biotp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile" \
+                "$tmpfile1" \
                 "protein_id"
-            # python3 -m biotp prefix_to_headers \
-            #     "$tmpfile" \
-            #     "$tmpfile" \
-            #     "rec"
-            cat "$tmpfile" >> "${taskdir}/rec.cds.fasta"
-            rm "$tmpfile"
+            python3 -m biotp prefix_to_headers \
+                "$tmpfile1" \
+                "$tmpfile2" \
+                "rec"
+            cat "$tmpfile2" >> "${taskdir}/rec.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
