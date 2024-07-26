@@ -71,6 +71,40 @@ EOS
     main "$@" 
 }
 
+function construct_msa_upstream_region_blastp_genus_symbol() {
+    ## This function is based on construct_dna_upstream_region_blastp_genus_symbol
+    ## which is located in blast.zsh
+    function usage() {
+        cat <<EOS
+Usage:  construct_msa_upstream_region_blastp_genus_symbol <arg1> <arg2> <arg3> <arg4> <arg5> (<arg6> <arg7> ...)
+
+    arg1: genus
+    arg2: symbol
+    arg3: symbol_org
+    arg4: evalue
+    arg5: bp
+
+    arg6: protein_id
+    arg7: protein_name
+    ...
+    
+
+EOS
+        exit 1
+    }
+
+    function construct_msa() {
+        mafft "${taskdir}/${genus}.${symbol}.dna_upstream_region.fasta" > "${taskdir}/${genus}.${symbol}.dna_upstream_region.aln"
+    }
+
+    function main() {
+        construct_dna_upstream_region_blastp_genus_symbol "$@"
+        construct_msa
+    }
+
+    main "$@"
+}
+
 function construct_msa_intron_blastp_genus_symbol() {
     ## This function is based on construct_dna_intron_blastp_genus_symbol
     ## which is located in blast.zsh
