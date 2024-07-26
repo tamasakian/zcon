@@ -449,7 +449,7 @@ EOS
                     fi
                     tmpfile=$(mktemp)
                     local _seq; local _strand; local _start; local _end
-                    read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_proid "${DATA}/${genus}/${org}.genome.gff" "$pep_id")
+                    read _seq _strand _start _end <<< $(python3 -m biotp output_seqid_strand_locs_by_pepid "${DATA}/${genus}/${org}.genome.gff" "$pep_id")
                     blastdbcmd \
                         -entry "$_seq" \
                         -db "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
