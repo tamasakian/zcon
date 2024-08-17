@@ -110,7 +110,7 @@ EOS
     function blastp_with_diamond() {
         diamond blastp \
             --db "${taskdir}/database" \
-            --query "${taskdir}/rec.fasta" \
+            --query "${taskdir}/sgp.fasta" \
             --out "${taskdir}/hits.tsv" \
             --max-target-seqs "$max_target_seqs"
     }
