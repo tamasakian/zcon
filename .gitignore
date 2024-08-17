@@ -39,3 +39,5 @@
 !/lib/orthofinder.zsh
 !/lib/raxml.zsh
 !/lib/trimal.zsh
+
+!/lib/sgo.zsh
