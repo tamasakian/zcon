@@ -43,7 +43,7 @@ If you use `venv` to manage packages;
 ## prepare venv
 cd zcon
 python3 -m venv venv
-. venv/bin/activate
+source venv/bin/activate
 
 ## install BIOTP
 cd ..
