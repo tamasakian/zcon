@@ -63,7 +63,7 @@ EOS
             python3 -m fasp prefix_to_sequence_ids \
                 "${DATA}/${genus}/${org}.pep.all.fasta" \
                 "$tmpfile" \
-                "sgp_${org}"
+                "sgp_${org}_"
             cat "$tmpfile" >> "${taskdir}/sgp.fasta"
             rm "$tmpfile"
         done
@@ -77,7 +77,7 @@ EOS
             python3 -m fasp prefix_to_sequence_ids \
                 "${DATA}/${genus}/${org}.pep.all.fasta" \
                 "$tmpfile" \
-                "grp_${org}"
+                "grp_${org}_"
             cat "$tmpfile" >> "${taskdir}/grp.fasta"
             rm "$tmpfile"
         done
@@ -91,7 +91,7 @@ EOS
             python3 -m fasp prefix_to_sequence_ids \
                 "${DATA}/${genus}/${org}.pep.all.fasta" \
                 "$tmpfile" \
-                "ogp"
+                "ogp_${org}_"
             cat "$tmpfile" >> "${taskdir}/ogp.fasta"
             rm "$tmpfile"
         done
@@ -119,6 +119,9 @@ EOS
         python3 -m biotp slice_hits_by_crossover_group \
             "${taskdir}/hits.tsv" \
             "${taskdir}/hits_slice.tsv"
+        python3 -m biotp output_besthit_for_subgroup \
+            "${taskdir}/hits.tsv" \
+            "${taskdir}/besthits.tsv"
     }
 
     function main() {
