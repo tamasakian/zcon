@@ -10,9 +10,3 @@ export JOB=${ROOT}/job
 export LIB=${ROOT}/lib
 export SCRIPT=${ROOT}/script
 export TASKFILE=${ROOT}/taskfile
-
-for dir in $DATA $DOC $DOWNLOAD $JOB $LIB $SCRIPT $TASKFILE; do
-    mkdir -p "$dir"
-done
-
-source "${ROOT}/venv/bin/activate"
