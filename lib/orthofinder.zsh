@@ -5,7 +5,7 @@
 function search_orthogroups() {
     function usage() {
         cat <<EOS
-Usage search_orthogroups <arg1> <arg2> ...
+Usage: search_orthogroups <arg1> <arg2> ...
 
     arg1: num (more than 3)
     arg2: org
@@ -38,6 +38,7 @@ EOS
     }
 
     function search_orthogroups_with_orgs() {
+        export PATH="${HOME}/bin/OrthoFinder:$PATH"
         orthofinder \
             -t 128 \
             -a 8 \
