@@ -38,7 +38,6 @@ EOS
     }
 
     function search_orthogroups_with_orgs() {
-        export PATH="${HOME}/bin/OrthoFinder:$PATH"
         orthofinder \
             -t 128 \
             -a 8 \
