@@ -128,7 +128,7 @@ EOS
 
     function construct_msa() {
         for ((i=1; i<=$num; i++)); do
-            mafft "${taskdir}/${genus}.intron.${i}.fasta" > "${taskdir}/${genus}.intron.${i}.aln"
+            mafft --auto "${taskdir}/${genus}.intron.${i}.fasta" > "${taskdir}/${genus}.intron.${i}.aln"
         done 
     }
 
