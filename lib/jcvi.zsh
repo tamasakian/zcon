@@ -1224,3 +1224,251 @@ EOS
     main "$@"
 }
 
+
+function visualize_one_to_two_synteny() {
+    function usage() {
+        cat <<EOS
+Usage:  visualize_one_to_two_synteny <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
+
+    arg1: ref_org
+    arg2: qry_org
+    arg3: qry_feat
+    arg4: qry_feat
+    arg5: num_seqs
+    arg6: seqs
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 6 ]]; then
+            usage
+        fi
+        ref="${1// /_}"
+        ref_genus=${ref%%_*}
+        shift
+        qry="${1// /_}"
+        qry_genus=${qry%%_*}
+        shift
+        qry_feat="$1"
+        shift
+        ref_feat="$1"
+        shift
+        num_seqs=$1
+        shift
+        for ((i=1; i<=num_seqs; i++)); do
+            seqs+=("$1")
+            shift
+        done 
+    }
+
+    function to_bed() {
+        cd $taskdir
+        python3 -m biotp slice_lines_by_seqids \
+            "${DATA}/${ref_genus}/${ref}.genome.gff" \
+            "${taskdir}/${ref}.genome.slice.gff" \
+            "${seqs[@]}"
+        python3 -m jcvi.formats.gff bed \
+            --type=gene \
+            --key=${ref_feat} \
+            "${taskdir}/${ref}.genome.slice.gff" \
+            -o "${ref}.bed"
+
+        python3 -m biotp slice_lines_by_seqids \
+            "${DATA}/${qry_genus}/${qry}.genome.gff" \
+            "${taskdir}/${qry}.genome.slice.gff" \
+            "${seqs[@]}"
+        python3 -m jcvi.formats.gff bed \
+            --type=gene \
+            --key=${qry_feat} \
+            "${taskdir}/${qry}.genome.slice.gff" \
+            -o "${qry}.bed"
+        cd $ROOT
+    }
+    
+    function to_cds() {
+        cd $taskdir
+        python3 -m biotp slice_headers_by_ids \
+            "${DATA}/${ref_genus}/${ref}.cds.all.fasta" \
+            "${taskdir}/${ref}.cds.slice.fasta" \
+            "${seqs[@]}"
+        python3 -m biotp rename_headers_to_features \
+            "${taskdir}/${ref}.cds.slice.fasta" \
+            "${taskdir}/${ref}.cds.slice.${ref_feat}.fasta" \
+            "$ref_feat" 
+        python3 -m jcvi.formats.fasta format \
+            "${taskdir}/${ref}.cds.slice.${ref_feat}.fasta" \
+            "${ref}.cds"
+
+        python3 -m biotp slice_headers_by_ids \
+            "${DATA}/${qry_genus}/${qry}.cds.all.fasta" \
+            "${taskdir}/${qry}.cds.slice.fasta" \
+            "${seqs[@]}"
+        python3 -m biotp rename_headers_to_features \
+            "${taskdir}/${qry}.cds.slice.fasta" \
+            "${taskdir}/${qry}.cds.slice.${qry_feat}.fasta" \
+            "$qry_feat" 
+        python3 -m jcvi.formats.fasta format \
+            "${taskdir}/${qry}.cds.slice.${qry_feat}.fasta" \
+            "${qry}.cds"
+        cd $ROOT
+    }
+
+    function search_microsynteny() {
+        cd $taskdir
+        python3 -m jcvi.compara.catalog ortholog "$ref" "$qry" --no_strip_names
+        python3 -m jcvi.compara.synteny mcscan "${ref}.bed" "${ref}.${qry}.lifted.anchors" --iter=2 -o "${ref}.${qry}.i2.blocks"
+        touch "blocks"
+        cat "${ref}.${qry}.i2.blocks" > "blocks"
+        touch "blocks.layout"
+        echo "# x, y, rotation, ha, va, color, ratio, label" >> "blocks.layout"
+        echo "0.5, 0.5, 0, left, center, #009E73, 1, ${seqs[1]}" >> "blocks.layout"
+        echo "0.5, 0.3, 0, left, center, #E69F00, 1, ${seqs[2]}" >> "blocks.layout"
+        echo "0.5, 0.7, 0, left, center, #56B4E9, 1, ${seqs[3]}" >> "blocks.layout"
+        echo "# edges" >> "blocks.layout"
+        echo "e, 0, 1" >> "blocks.layout"
+        echo "e, 0, 2" >> "blocks.layout"
+        python3 -m jcvi.formats.bed merge "${ref}.bed" "${qry}.bed" -o "${ref}.${qry}.bed"
+        python3 -m jcvi.graphics.synteny blocks "${ref}.${qry}.bed" "blocks.layout" --glyphstyle=arrow --shadestyle=line
+        cd $ROOT
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        to_bed
+        to_cds
+        search_microsynteny
+    }
+    main "$@"
+}
+
+
+function compare_besthit_one_to_two_synteny() {
+    function usage() {
+        cat <<EOS
+Usage:  compare_besthit_one_to_two_synteny <arg1> <arg2> <arg3> <arg4> <arg5>
+
+    arg1: ref_org
+    arg2: qry_org
+    arg3: qry_feat
+    arg4: qry_feat
+    arg5: num_seqs
+    arg6: seqs
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 6 ]]; then
+            usage
+        fi
+        ref="${1// /_}"
+        ref_genus=${ref%%_*}
+        shift
+        qry="${1// /_}"
+        qry_genus=${qry%%_*}
+        shift
+        ref_feat="$1"
+        shift
+        qry_feat="$1"
+        shift
+        num_seqs=$1
+        shift
+        for ((i=1; i<=num_seqs; i++)); do
+            seqs+=("$1")
+            shift
+        done 
+    }
+
+    function to_bed() {
+        cd $taskdir
+        python3 -m biotp slice_lines_by_seqids \
+            "${DATA}/${ref_genus}/${ref}.genome.gff" \
+            "${taskdir}/${ref}.genome.slice.gff" \
+            "${seqs[@]}"
+        python3 -m jcvi.formats.gff bed \
+            --type=gene \
+            --key=${ref_feat} \
+            "${taskdir}/${ref}.genome.slice.gff" \
+            -o "${ref}.bed"
+
+        python3 -m biotp slice_lines_by_seqids \
+            "${DATA}/${qry_genus}/${qry}.genome.gff" \
+            "${taskdir}/${qry}.genome.slice.gff" \
+            "${seqs[@]}"
+        python3 -m jcvi.formats.gff bed \
+            --type=gene \
+            --key=${qry_feat} \
+            "${taskdir}/${qry}.genome.slice.gff" \
+            -o "${qry}.bed"
+        cd $ROOT
+    }
+    
+    function to_cds() {
+        cd $taskdir
+        python3 -m biotp slice_headers_by_ids \
+            "${DATA}/${ref_genus}/${ref}.cds.all.fasta" \
+            "${taskdir}/${ref}.cds.slice.fasta" \
+            "${seqs[@]}"
+        python3 -m biotp rename_headers_to_features \
+            "${taskdir}/${ref}.cds.slice.fasta" \
+            "${taskdir}/${ref}.cds.slice.${ref_feat}.fasta" \
+            "$ref_feat" 
+        python3 -m jcvi.formats.fasta format \
+            "${taskdir}/${ref}.cds.slice.${ref_feat}.fasta" \
+            "${ref}.cds"
+
+        python3 -m biotp slice_headers_by_ids \
+            "${DATA}/${qry_genus}/${qry}.cds.all.fasta" \
+            "${taskdir}/${qry}.cds.slice.fasta" \
+            "${seqs[@]}"
+        python3 -m biotp rename_headers_to_features \
+            "${taskdir}/${qry}.cds.slice.fasta" \
+            "${taskdir}/${qry}.cds.slice.${qry_feat}.fasta" \
+            "$qry_feat" 
+        python3 -m jcvi.formats.fasta format \
+            "${taskdir}/${qry}.cds.slice.${qry_feat}.fasta" \
+            "${qry}.cds"
+        cd $ROOT
+    }
+
+    function search_microsynteny() {
+        cd $taskdir
+        python3 -m jcvi.compara.catalog ortholog "$ref" "$qry" --no_strip_names
+        python3 -m jcvi.compara.synteny mcscan "${ref}.bed" "${ref}.${qry}.lifted.anchors" --iter=2 -o "${ref}.${qry}.i2.blocks"
+        cd $ROOT
+    }
+
+    function output_besthit() {
+        python3 -m biotp output_besthit_one_to_two_synteny \
+            "${taskdir}/${ref}.bed" \
+            "${taskdir}/${qry}.bed" \
+            "${taskdir}/${ref}.${qry}.i2.blocks" \
+            "${taskdir}/${ref}.${qry}.anchors" \
+            "${taskdir}/hits.tsv"
+    }
+
+    function make_besthit_bar() {
+        Rscript ${SCRIPT}/count_besthit.R \
+            "${taskdir}/${seqid_ref}.${seqid_qry1}.${seqid_qry2}.csv" \
+            "${taskdir}/${seqid_ref}.${seqid_qry1}.${seqid_qry2}.png" \
+            "${seqid_ref}" \
+            "${seqid_qry1}" \
+            "${seqid_qry2}"
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        to_bed
+        to_cds
+        search_microsynteny
+        output_besthit
+        # make_besthit_bar
+    }
+
+    main "$@"
+}
