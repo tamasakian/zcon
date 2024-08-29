@@ -329,11 +329,10 @@ EOS
                 -entry "$seq" \
                 -db "${taskdir}/database.fasta" \
                 -out "$tmpfile"
-            python3 -m biotp slice_seq_flanking_region \
+            python3 -m fasp slice_sequence_by_flanking_region \
                 "$tmpfile" \
                 "$tmpfile" \
                 "${peps[$pep_key]}" \
-                "$pep_key" \
                 "${bp}bp-flanking-region" \
                 "$strand" \
                 "$start" \
@@ -388,11 +387,11 @@ EOS
 }
 
 
-function generate_flanking_dna_fasta() {
-    ## This function generates a fasta file of flanking region of genes.
+function generate_upstream_dna_fasta() {
+    ## This function generates a fasta file of upstream region of genes.
     function usage() {
         cat <<EOS
-Usage: generate_flanking_dna_fasta <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
+Usage: generate_upstream_dna_fasta <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
 
     arg1: num_orgs
     arg2: orgs
@@ -450,7 +449,7 @@ EOS
     }
 
     function generate_fasta() {
-        touch "${taskdir}/flanking_dna.fasta"
+        touch "${taskdir}/upstream_dna.fasta"
         makeblastdb \
             -in "${taskdir}/database.fasta" \
             -dbtype nucl \
@@ -466,17 +465,16 @@ EOS
                 -entry "$seq" \
                 -db "${taskdir}/database.fasta" \
                 -out "$tmpfile"
-            python3 -m biotp slice_seq_flanking_region \
+            python3 -m fasp slice_sequence_by_upstream_region \
                 "$tmpfile" \
                 "$tmpfile" \
                 "${peps[$pep_key]}" \
-                "$pep_key" \
-                "${bp}bp-flanking-region" \
+                "${bp}bp-upstream-region" \
                 "$strand" \
                 "$start" \
                 "$end" \
                 "$bp"
-            cat "$tmpfile" >> "${taskdir}/flanking_dna.fasta"
+            cat "$tmpfile" >> "${taskdir}/upstream_dna.fasta"
             rm "$tmpfile"
         done
     }
@@ -492,5 +490,108 @@ EOS
     main "$@"
 }
 
+
+function generate_downstream_dna_fasta() {
+    ## This function generates a fasta file of downstream region of genes.
+    function usage() {
+        cat <<EOS
+Usage: generate_downstream_dna_fasta <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
+
+    arg1: num_orgs
+    arg2: orgs
+    arg3: num_peps
+    arg4: pep_key
+    arg5: pep_value
+    arg6: bp
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 5 ]]; then
+            usage
+        fi
+
+        num_orgs=$1
+        shift
+        orgs=()
+        for ((i=1; i<=num_orgs; i++)); do
+            orgs[i]="${1// /_}"
+            shift
+        done
+
+        num_peps=$1
+        shift
+        typeset -g -A peps
+        for ((i=1; i<=num_peps; i++)); do
+            key="$1"
+            shift
+            value="$1"
+            shift
+            peps[$key]="$value"
+        done
+
+        bp=$1
+        shift
+    }
+
+    function merge_fasta() {
+        touch "${taskdir}/database.fasta"
+        for org in "${orgs[@]}"; do
+            genus=${org%%_*}
+            cat "${DATA}/${genus}/${org}.dna.toplevel.fasta" >> "${taskdir}/database.fasta"
+        done
+    }
+
+    function merge_gff() {
+        touch "${taskdir}/database.gff"
+        for org in "${orgs[@]}"; do
+            genus=${org%%_*}
+            cat "${DATA}/${genus}/${org}.genome.gff" >> "${taskdir}/database.gff"
+        done
+    }
+
+    function generate_fasta() {
+        touch "${taskdir}/downstream_dna.fasta"
+        makeblastdb \
+            -in "${taskdir}/database.fasta" \
+            -dbtype nucl \
+            -hash_index \
+            -parse_seqids
+
+        for pep_key in ${(@k)peps}; do
+            tmpfile=$(mktemp)
+            seq="" strand="" start="" end=""
+            output=$(python3 -m biotp output_seqid_strand_locs_by_pepid "${taskdir}/database.gff" "$pep_key")
+            read seq strand start end <<< "$output"
+            blastdbcmd \
+                -entry "$seq" \
+                -db "${taskdir}/database.fasta" \
+                -out "$tmpfile"
+            python3 -m fasp slice_sequence_by_downstream_region \
+                "$tmpfile" \
+                "$tmpfile" \
+                "${peps[$pep_key]}" \
+                "${bp}bp-downstream-region" \
+                "$strand" \
+                "$start" \
+                "$end" \
+                "$bp"
+            cat "$tmpfile" >> "${taskdir}/downstream_dna.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        merge_fasta
+        merge_gff
+        generate_fasta
+    }
+
+    main "$@"
+}
 
 
