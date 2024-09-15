@@ -23,6 +23,7 @@ git clone https://github.com/tamasakian/zcon.git
 
 - BLAST+
 - datasets
+- DIAMOND
 - LAST
 - MAFFT
 - MCScanX
@@ -35,6 +36,7 @@ git clone https://github.com/tamasakian/zcon.git
 ### PythonPackages
 
 - BIOTP
+- FASP
 - JCVI
 
 If you use `venv` to manage packages; 
@@ -46,10 +48,10 @@ python3 -m venv venv
 source venv/bin/activate
 
 ## install BIOTP
-cd ..
-git clone https://github.com/tamasakian/biotp.git
-cd zcon
-pip3 install ../biotp
+pip3 install git+https://github.com/tamasakian/biotp.git
+
+## install FASP
+pip3 install git+https://github.com/tamasakian/fasp.git
 
 ## install JCVI
 pip3 install jcvi
