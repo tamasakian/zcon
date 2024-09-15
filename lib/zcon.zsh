@@ -250,6 +250,125 @@ EOS
     main "$@"
 }
 
+function generate_cds_fasta() {
+    ## This function generates a fasta file of CDS of genes.
+    function usage() {
+        cat <<EOS
+Usage:  generate_cds_fasta <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
+
+    arg1: num_orgs
+    arg2: orgs
+    arg3: num_peps
+    arg4: pep_key
+    arg5: pep_value
+    
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# -lt 5 ]]; then
+            usage
+        fi
+
+        num_orgs=$1
+        shift
+        orgs=()
+        for ((i=1; i<=num_orgs; i++)); do
+            orgs[i]="${1// /_}"
+            shift
+        done
+
+        num_peps=$1
+        shift
+        typeset -g -A peps
+        for ((i=1; i<=num_peps; i++)); do
+            key="$1"
+            shift
+            value="$1"
+            shift
+            peps[$key]="$value"
+        done
+    }
+
+    function merge_fasta() {
+        touch "${taskdir}/database.fasta"
+        for org in "${orgs[@]}"; do
+            tmpfile=$(mktemp)
+            genus=${org%%_*}
+            python3 -m fasp rename_headers_feature \
+                "${DATA}/${genus}/${org}.cds.all.fasta" \
+                "$tmpfile" \
+                "protein_id"
+            cat "$tmpfile" >> "${taskdir}/database.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function generate_fasta() {
+        makeblastdb \
+            -in "${taskdir}/database.fasta" \
+            -dbtype nucl \
+            -hash_index \
+            -parse_seqids
+        touch "${taskdir}/cds.fasta"
+        for pep_key in ${(@k)peps}; do
+            tmpfile=$(mktemp)
+            blastdbcmd \
+                -entry "$pep_key" \
+                -db "${taskdir}/database.fasta" \
+                -out "$tmpfile"
+            python3 -m fasp rename_header \
+                "$tmpfile" \
+                "$tmpfile" \
+                "${peps[$pep_key]}" \
+                "" 
+            cat "$tmpfile" >> "${taskdir}/cds.fasta"
+            rm "$tmpfile"
+        done
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        merge_fasta
+        generate_fasta
+    }
+
+    main "$@"
+}
+
+
+function construct_cds_msa() {
+    ## This function constructs a multiple sequence alignment of CDS.
+    ## This is based on generate_cds_fasta.
+    function usage() {
+        cat <<EOS
+Usage: construct_cds_msa <arg1> <arg2> <arg3> <arg4> <arg5>
+
+    arg1: num_orgs
+    arg2: orgs
+    arg3: num_peps
+    arg4: pep_key
+    arg5: pep_value
+
+EOS
+        exit 1
+    }
+
+    function construct_msa() {
+        mafft --auto "${taskdir}/cds.fasta" > "${taskdir}/cds.aln.fasta"
+        mafft --auto --clustalout "${taskdir}/cds.fasta" > "${taskdir}/cds.aln.clustal"
+    }
+
+    function main() {
+        generate_cds_fasta "$@"
+        construct_msa
+    }
+
+    main "$@"
+}
+
 
 function generate_flanking_dna_fasta() {
     ## This function generates a fasta file of flanking region of genes.
