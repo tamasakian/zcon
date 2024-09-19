@@ -135,3 +135,52 @@ EOS
     main "$@"
 
 }
+
+function construct_introns() {
+    function usage() {
+        cat << EOS
+Usage:  construct_introns <arg1>
+
+    arg1: org
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 1 ]]; then
+            usage
+        fi
+        org="${1// /_}"
+        genus=${org%%_*}
+    }
+
+    function generate_gff() {
+        python3 -m biotp generate_introns \
+            "${DATA}/${genus}/${org}.genome.gff" \
+            "${taskdir}/${org}.intron.gff"
+    }
+
+    function generate_fasta() {
+        python3 -m fasp generate_introns \
+            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+            "${taskdir}/${org}.intron.all.fasta" \
+            "${taskdir}/${org}.intron.gff"
+    }
+
+    function measure_lengths() {
+        python3 -m fasp measure_lengths \
+            "${taskdir}/${org}.intron.all.fasta" \
+            "${taskdir}/${org}.intron.length.tsv"
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        generate_gff
+        generate_fasta
+        measure_lengths
+    }
+
+    main "$@"
+}
