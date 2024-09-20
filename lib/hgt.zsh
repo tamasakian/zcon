@@ -178,7 +178,7 @@ EOS
         done
     }
 
-    function makeblastdb_refernce() {
+    function makeblastdb_reference() {
         touch "${taskdir}/reference.cds.fasta"
         for ref in sgp grp ogp; do
             cat "${taskdir}/${ref}.cds.fasta" >> "${taskdir}/reference.cds.fasta"
