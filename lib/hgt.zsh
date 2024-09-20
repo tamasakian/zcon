@@ -199,7 +199,7 @@ EOS
     }
 
     function blastn_hits() {
-        blastn -outfmt 7 -evalue $evalue \
+        blastn -outfmt 7 -evalue 10 \
             -db "${taskdir}/reference.cds.fasta" \
             -query "${taskdir}/sgp.cds.fasta" \
             -out "${taskdir}/hits_cds.tsv"
