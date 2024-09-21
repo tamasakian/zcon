@@ -128,17 +128,18 @@ EOS
         touch "${taskdir}/sgp.cds.fasta"
         for org in "${org_sgp[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m fasp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "${taskdir}/${org}.cds.all.fasta" \
+                "$tmpfile1" \
                 "protein_id"
             python3 -m fasp prefix_to_sequence_ids \
-                "${taskdir}/${org}.cds.all.fasta" \
-                "$tmpfile" \
-                "sgp_${org}_"
-            cat "$tmpfile" >> "${taskdir}/sgp.cds.fasta"
-            rm "$tmpfile"
+                "$tmpfile1" \
+                "$tmpfile2" \
+                "grp_${org}_"
+            cat "$tmpfile2" >> "${taskdir}/sgp.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
@@ -146,17 +147,18 @@ EOS
         touch "${taskdir}/grp.cds.fasta"
         for org in "${org_grp[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m fasp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "${taskdir}/${org}.cds.all.fasta" \
+                "$tmpfile1" \
                 "protein_id"
             python3 -m fasp prefix_to_sequence_ids \
-                "${taskdir}/${org}.cds.all.fasta" \
-                "$tmpfile" \
+                "$tmpfile1" \
+                "$tmpfile2" \
                 "grp_${org}_"
-            cat "$tmpfile" >> "${taskdir}/grp.cds.fasta"
-            rm "$tmpfile"
+            cat "$tmpfile2" >> "${taskdir}/grp.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
@@ -164,17 +166,18 @@ EOS
         touch "${taskdir}/ogp.cds.fasta"
         for org in "${org_ogp[@]}"; do
             genus=${org%%_*}
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             python3 -m fasp rename_headers_feature \
                 "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "${taskdir}/${org}.cds.all.fasta" \
+                "$tmpfile1" \
                 "protein_id"
             python3 -m fasp prefix_to_sequence_ids \
-                "${taskdir}/${org}.cds.all.fasta" \
-                "$tmpfile" \
-                "ogp_${org}_"
-            cat "$tmpfile" >>"${taskdir}/ogp.cds.fasta"
-            rm "$tmpfile"
+                "$tmpfile1" \
+                "$tmpfile2" \
+                "grp_${org}_"
+            cat "$tmpfile2" >>"${taskdir}/ogp.cds.fasta"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
@@ -199,7 +202,7 @@ EOS
     }
 
     function blastn_hits() {
-        blastn -outfmt 7 -evalue 10 \
+        blastn -outfmt 6 -evalue 10 \
             -db "${taskdir}/reference.cds.fasta" \
             -query "${taskdir}/sgp.cds.fasta" \
             -out "${taskdir}/hits_cds.tsv"
