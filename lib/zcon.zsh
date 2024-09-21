@@ -442,7 +442,7 @@ EOS
         for pep_key in ${(@k)peps}; do
             tmpfile=$(mktemp)
             seq="" strand="" start="" end=""
-            output=$(python3 -m biotp output_seqid_strand_locs_by_pepid "${taskdir}/database.gff" "$pep_key")
+            output=$(python3 -m biotp output_seqid_strand_locs_by_gene_id "${taskdir}/database.gff" "$pep_key")
             read seq strand start end <<< "$output"
             blastdbcmd \
                 -entry "$seq" \
@@ -578,7 +578,7 @@ EOS
         for pep_key in ${(@k)peps}; do
             tmpfile=$(mktemp)
             seq="" strand="" start="" end=""
-            output=$(python3 -m biotp output_seqid_strand_locs_by_pepid "${taskdir}/database.gff" "$pep_key")
+            output=$(python3 -m biotp output_seqid_strand_locs_by_gene_id "${taskdir}/database.gff" "$pep_key")
             read seq strand start end <<< "$output"
             blastdbcmd \
                 -entry "$seq" \
@@ -682,7 +682,7 @@ EOS
         for pep_key in ${(@k)peps}; do
             tmpfile=$(mktemp)
             seq="" strand="" start="" end=""
-            output=$(python3 -m biotp output_seqid_strand_locs_by_pepid "${taskdir}/database.gff" "$pep_key")
+            output=$(python3 -m biotp output_seqid_strand_locs_by_gene_id "${taskdir}/database.gff" "$pep_key")
             read seq strand start end <<< "$output"
             blastdbcmd \
                 -entry "$seq" \
