@@ -192,7 +192,7 @@ EOS
             "${taskdir}/sgp.cds.fasta" \
             "${hits_sgp[@]}"
         hits_reference=($(cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u))
-        python3 -m fasp slice_records_by_exact_ids \
+        python3 -m fasp slice_records_by_ids \
             "${taskdir}/reference.cds.fasta" \
             "${taskdir}/reference.cds.fasta"  \
             "${hits_reference[@]}"
