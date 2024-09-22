@@ -187,7 +187,7 @@ EOS
             cat "${taskdir}/${ref}.cds.fasta" >> "${taskdir}/reference.cds.fasta"
         done
         hits_sgp=($(cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u))
-        python3 -m fasp slice_records_by_exact_ids \
+        python3 -m fasp slice_records_by_ids \
             "${taskdir}/sgp.cds.fasta" \
             "${taskdir}/sgp.cds.fasta" \
             "${hits_sgp[@]}"
