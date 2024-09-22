@@ -124,7 +124,7 @@ EOS
             "${taskdir}/besthits.tsv"
     }
 
-    function merge_sgp_cds_fasta() {
+    function merge_sgp_fasta_2() {
         touch "${taskdir}/sgp.cds.fasta"
         for org in "${org_sgp[@]}"; do
             genus=${org%%_*}
@@ -137,13 +137,13 @@ EOS
             python3 -m fasp prefix_to_sequence_ids \
                 "$tmpfile1" \
                 "$tmpfile2" \
-                "grp_${org}_"
+                "sgp_${org}_"
             cat "$tmpfile2" >> "${taskdir}/sgp.cds.fasta"
             rm "$tmpfile1" "$tmpfile2"
         done
     }
 
-    function merge_grp_cds_fasta() {
+    function merge_grp_fasta_2() {
         touch "${taskdir}/grp.cds.fasta"
         for org in "${org_grp[@]}"; do
             genus=${org%%_*}
@@ -162,7 +162,7 @@ EOS
         done
     }
 
-    function merge_ogp_cds_fasta() {
+    function merge_ogp_fasta_2() {
         touch "${taskdir}/ogp.cds.fasta"
         for org in "${org_ogp[@]}"; do
             genus=${org%%_*}
@@ -175,7 +175,7 @@ EOS
             python3 -m fasp prefix_to_sequence_ids \
                 "$tmpfile1" \
                 "$tmpfile2" \
-                "grp_${org}_"
+                "ogp_${org}_"
             cat "$tmpfile2" >>"${taskdir}/ogp.cds.fasta"
             rm "$tmpfile1" "$tmpfile2"
         done
@@ -226,9 +226,9 @@ EOS
         makedb_reference
         blastp_with_diamond
         slice_hits
-        merge_sgp_cds_fasta
-        merge_grp_cds_fasta
-        merge_ogp_cds_fasta
+        merge_sgp_fasta_2
+        merge_grp_fasta_2
+        merge_ogp_fasta_2
         makeblastdb_reference
         blastn_hits
         slice_hits_cds
