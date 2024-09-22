@@ -205,16 +205,16 @@ EOS
         blastn -outfmt 6 -evalue 10 \
             -db "${taskdir}/reference.cds.fasta" \
             -query "${taskdir}/sgp.cds.fasta" \
-            -out "${taskdir}/hits_cds.tsv"
+            -out "${taskdir}/hits_2.tsv"
     }
 
-    function slice_hits_cds() {
+    function slice_hits_2() {
         python3 -m biotp slice_hits_by_crossover_group \
-            "${taskdir}/hits_cds.tsv" \
-            "${taskdir}/hits_cds_slice.tsv"
+            "${taskdir}/hits_2.tsv" \
+            "${taskdir}/hits_slice_2.tsv"
         python3 -m biotp output_besthit_for_subgroup \
-            "${taskdir}/hits_cds.tsv" \
-            "${taskdir}/besthits_cds.tsv"
+            "${taskdir}/hits_2.tsv" \
+            "${taskdir}/besthits_2.tsv"
     }
 
     function main() {
@@ -231,7 +231,7 @@ EOS
         merge_ogp_fasta_2
         makeblastdb_reference
         blastn_hits
-        slice_hits_cds
+        slice_hits_2
     }
 
     main "$@"
