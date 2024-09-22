@@ -198,7 +198,7 @@ EOS
             "${hits_reference[@]}"
         makeblastdb \
             -in "${taskdir}/reference.cds.fasta" \
-            -out "${taskdir}/database_2"
+            -out "${taskdir}/database_2" \
             -dbtype nucl -hash_index -parse_seqids
     }
 
