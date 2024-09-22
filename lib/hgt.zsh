@@ -198,12 +198,13 @@ EOS
             "${hits_reference[@]}"
         makeblastdb \
             -in "${taskdir}/reference.cds.fasta" \
+            -out "${taskdir}/database_2"
             -dbtype nucl -hash_index -parse_seqids
     }
 
     function blastn_hits() {
         blastn -outfmt 6 -evalue 10 \
-            -db "${taskdir}/reference.cds.fasta" \
+            -db "${taskdir}/database_2" \
             -query "${taskdir}/sgp.cds.fasta" \
             -out "${taskdir}/hits_2.tsv"
     }
