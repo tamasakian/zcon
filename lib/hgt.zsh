@@ -125,7 +125,7 @@ EOS
     }
 
     function merge_sgp_fasta_2() {
-        touch "${taskdir}/sgp.cds.fasta"
+        touch "${taskdir}/sgp.cds.all.fasta"
         for org in "${org_sgp[@]}"; do
             genus=${org%%_*}
             tmpfile1=$(mktemp)
@@ -138,13 +138,13 @@ EOS
                 "$tmpfile1" \
                 "$tmpfile2" \
                 "sgp_${org}_"
-            cat "$tmpfile2" >> "${taskdir}/sgp.cds.fasta"
+            cat "$tmpfile2" >> "${taskdir}/sgp.cds.all.fasta"
             rm "$tmpfile1" "$tmpfile2"
         done
     }
 
     function merge_grp_fasta_2() {
-        touch "${taskdir}/grp.cds.fasta"
+        touch "${taskdir}/grp.cds.all.fasta"
         for org in "${org_grp[@]}"; do
             genus=${org%%_*}
             tmpfile1=$(mktemp)
@@ -157,13 +157,13 @@ EOS
                 "$tmpfile1" \
                 "$tmpfile2" \
                 "grp_${org}_"
-            cat "$tmpfile2" >> "${taskdir}/grp.cds.fasta"
+            cat "$tmpfile2" >> "${taskdir}/grp.cds.all.fasta"
             rm "$tmpfile1" "$tmpfile2"
         done
     }
 
     function merge_ogp_fasta_2() {
-        touch "${taskdir}/ogp.cds.fasta"
+        touch "${taskdir}/ogp.cds.all.fasta"
         for org in "${org_ogp[@]}"; do
             genus=${org%%_*}
             tmpfile1=$(mktemp)
@@ -176,25 +176,25 @@ EOS
                 "$tmpfile1" \
                 "$tmpfile2" \
                 "ogp_${org}_"
-            cat "$tmpfile2" >>"${taskdir}/ogp.cds.fasta"
+            cat "$tmpfile2" >>"${taskdir}/ogp.cds.all.fasta"
             rm "$tmpfile1" "$tmpfile2"
         done
     }
 
     function makeblastdb_reference() {
-        touch "${taskdir}/reference.cds.fasta"
+        touch "${taskdir}/reference.cds.all.fasta"
         for ref in sgp grp ogp; do
-            cat "${taskdir}/${ref}.cds.fasta" >> "${taskdir}/reference.cds.fasta"
+            cat "${taskdir}/${ref}.cds.all.fasta" >> "${taskdir}/reference.cds.all.fasta"
         done
         hits_sgp=($(cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u))
         python3 -m fasp slice_records_by_ids \
-            "${taskdir}/sgp.cds.fasta" \
+            "${taskdir}/sgp.cds.all.fasta" \
             "${taskdir}/sgp.cds.fasta" \
             "${hits_sgp[@]}"
         hits_reference=($(cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u))
         python3 -m fasp slice_records_by_ids \
+            "${taskdir}/reference.cds.all.fasta" \
             "${taskdir}/reference.cds.fasta" \
-            "${taskdir}/reference.cds.fasta"  \
             "${hits_reference[@]}"
         makeblastdb \
             -in "${taskdir}/reference.cds.fasta" \
