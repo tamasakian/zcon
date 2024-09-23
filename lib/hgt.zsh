@@ -196,8 +196,11 @@ EOS
             "${taskdir}/reference.cds.all.fasta" \
             "${taskdir}/reference.cds.fasta" \
             "${hits_reference[@]}"
+        python3 -m fasp assign_unique_ids \
+            "${taskdir}/reference.cds.fasta" \
+            "${taskdir}/reference.cds.unique.fasta" 
         makeblastdb \
-            -in "${taskdir}/reference.cds.fasta" \
+            -in "${taskdir}/reference.cds.unique.fasta" \
             -out "${taskdir}/database_2" \
             -dbtype nucl -hash_index -parse_seqids
     }
