@@ -12,3 +12,4 @@ export TASKFILE=${ROOT}/taskfile
 
 ## dependencies
 export PATH=${HOME}/bin/OrthoFinder:$PATH
+export PATH=${HOME}/bin/ncbi:$PATH
