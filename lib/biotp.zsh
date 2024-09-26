@@ -239,7 +239,7 @@ EOS
 function generate_all_upstream_reagions_fasta() {
     function usage() {
         cat << EOS
-Usage: generate_all_upstream_reagions_fasta <arg1>
+Usage: generate_all_upstream_reagions_fasta <arg1> <arg2>
 
     arg1: org
     arg2: bp
