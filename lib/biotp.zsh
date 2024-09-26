@@ -280,3 +280,49 @@ EOS
 
     main "$@"
 }
+
+
+function generate_all_downstream_reagions_fasta() {
+    function usage() {
+        cat << EOS
+Usage: generate_all_downstream_reagions_fasta <arg1> <arg2>
+
+    arg1: org
+    arg2: bp
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 2 ]]; then
+            usage
+        fi
+        org="${1// /_}"
+        bp=$2
+        genus=${org%%_*}
+    }
+
+    function generate_gff() {
+        python3 -m biotp generate_downstream_regions \
+            "${DATA}/${genus}/${org}.genome.gff" \
+            "${taskdir}/${org}.upstream_${bp}.gff" \
+            "$bp"
+    }
+
+    function generate_fasta() {
+        python3 -m fasp generate_downstream_regions \
+            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+            "${taskdir}/${org}.upstream_${bp}.all.fasta" \
+            "${taskdir}/${org}.upstream_${bp}.gff"
+    }   
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        generate_gff
+        generate_fasta
+    }
+
+    main "$@"
+}
