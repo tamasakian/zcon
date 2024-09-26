@@ -306,15 +306,15 @@ EOS
     function generate_gff() {
         python3 -m biotp generate_downstream_regions \
             "${DATA}/${genus}/${org}.genome.gff" \
-            "${taskdir}/${org}.upstream_${bp}.gff" \
+            "${taskdir}/${org}.downstream_${bp}.gff" \
             "$bp"
     }
 
     function generate_fasta() {
         python3 -m fasp generate_downstream_regions \
             "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
-            "${taskdir}/${org}.upstream_${bp}.all.fasta" \
-            "${taskdir}/${org}.upstream_${bp}.gff"
+            "${taskdir}/${org}.downstream_${bp}.all.fasta" \
+            "${taskdir}/${org}.downstream_${bp}.gff"
     }   
 
     function main() {
