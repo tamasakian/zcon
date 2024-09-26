@@ -45,6 +45,9 @@ EOS
     main "$@"
 }
 
+
+
+
 function construct_all_introns_by_genus() {
     function usage() {
         cat << EOS
@@ -136,6 +139,10 @@ EOS
 
 }
 
+
+
+
+
 function construct_introns() {
     function usage() {
         cat << EOS
@@ -180,6 +187,95 @@ EOS
         generate_gff
         generate_fasta
         measure_lengths
+    }
+
+    main "$@"
+}
+
+
+function generate_all_introns_fasta() {
+    function usage() {
+        cat << EOS
+Usage: generate_all_introns_fasta <arg1>
+
+    arg1: org
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 1 ]]; then
+            usage
+        fi
+        org="${1// /_}"
+        genus=${org%%_*}
+    }
+
+    function generate_gff() {
+        python3 -m biotp generate_introns \
+            "${DATA}/${genus}/${org}.genome.gff" \
+            "${taskdir}/${org}.intron.gff"
+    }
+
+    function generate_fasta() {
+        python3 -m fasp generate_introns \
+            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+            "${taskdir}/${org}.intron.all.fasta" \
+            "${taskdir}/${org}.intron.gff"
+    }   
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        generate_gff
+        generate_fasta
+    }
+
+    main "$@"
+}
+
+
+function generate_all_upstream_reagions_fasta() {
+    function usage() {
+        cat << EOS
+Usage: generate_all_upstream_reagions_fasta <arg1>
+
+    arg1: org
+    arg2: bp
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 2 ]]; then
+            usage
+        fi
+        org="${1// /_}"
+        bp=$2
+        genus=${org%%_*}
+    }
+
+    function generate_gff() {
+        python3 -m biotp generate_upstream_regions \
+            "${DATA}/${genus}/${org}.genome.gff" \
+            "${taskdir}/${org}.upstream_${bp}.gff" \
+            "$bp"
+    }
+
+    function generate_fasta() {
+        python3 -m fasp generate_upstream_regions \
+            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+            "${taskdir}/${org}.upstream_${bp}.all.fasta" \
+            "${taskdir}/${org}.upstream_${bp}.gff"
+    }   
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        generate_gff
+        generate_fasta
     }
 
     main "$@"
