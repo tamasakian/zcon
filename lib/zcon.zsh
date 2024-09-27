@@ -713,6 +713,7 @@ EOS
     main "$@"
 }
 
+
 function generate_intron_dna_fasta() {
     ## This function generates a fasta file of intron of genes.
     function usage() {
@@ -724,14 +725,13 @@ Usage:  generate_intron_dna_fasta <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
     arg3: num_peps
     arg4: pep_key
     arg5: pep_value
-    arg6: num_introns
     
 EOS
         exit 1
     }
 
     function parse_args() {
-        if [[ $# -lt 6 ]]; then
+        if [[ $# -lt 5 ]]; then
             usage
         fi
 
@@ -753,8 +753,6 @@ EOS
             shift
             peps[$key]="$value"
         done
-        num_introns=$1
-        shift
     }
 
     function merge_fasta() {
@@ -774,36 +772,17 @@ EOS
     }
 
     function generate_fasta() {
-        python3 -m biotp generate_coordinate_all_introns \
+        python3 -m biotp generate_introns \
             "${taskdir}/database.gff" \
             "${taskdir}/database_introns.gff"
-        python3 -m biotp generate_all_introns \
+        python3 -m fasp generate_introns \
             "${taskdir}/database.fasta" \
-            "${taskdir}/database_introns.gff" \
-            "${taskdir}/database_introns.fasta"
-        makeblastdb \
-            -in "${taskdir}/database_introns.fasta" \
-            -dbtype nucl \
-            -hash_index \
-            -parse_seqids
-
-        for ((i=1; i<=num_introns; i++)); do
-            touch "${taskdir}/intron_dna_${i}.fasta"
-            for pep_key in ${(@k)peps}; do
-                tmpfile=$(mktemp)
-                blastdbcmd \
-                    -entry "${pep_key}_intron_${i}" \
-                    -db "${taskdir}/database_introns.fasta" \
-                    -out "$tmpfile"
-                python3 -m fasp rename_header \
-                    "$tmpfile" \
-                    "$tmpfile" \
-                    "${peps[$pep_key]}" \
-                    "intron_${i}" 
-                cat "$tmpfile" >> "${taskdir}/intron_dna_${i}.fasta"
-                rm "$tmpfile"
-            done
-        done
+            "${taskdir}/database_introns.fasta" \
+            "${taskdir}/database_introns.gff"
+        python3 -m fasp slice_records_by_partial_ids \
+            "${taskdir}/database_introns.fasta" \
+            "${taskdir}/intron_dna.fasta" \
+            "${(@k)peps}"
     }
 
     function main() {
@@ -816,5 +795,110 @@ EOS
 
     main "$@"
 }
+
+
+# function generate_intron_dna_fasta() {
+#     ## This function generates a fasta file of intron of genes.
+#     function usage() {
+#         cat <<EOS
+# Usage:  generate_intron_dna_fasta <arg1> <arg2> <arg3> <arg4> <arg5> <arg6>
+
+#     arg1: num_orgs
+#     arg2: orgs
+#     arg3: num_peps
+#     arg4: pep_key
+#     arg5: pep_value
+#     arg6: num_introns
+    
+# EOS
+#         exit 1
+#     }
+
+#     function parse_args() {
+#         if [[ $# -lt 6 ]]; then
+#             usage
+#         fi
+
+#         num_orgs=$1
+#         shift
+#         orgs=()
+#         for ((i=1; i<=num_orgs; i++)); do
+#             orgs[i]="${1// /_}"
+#             shift
+#         done
+
+#         num_peps=$1
+#         shift
+#         typeset -g -A peps
+#         for ((i=1; i<=num_peps; i++)); do
+#             key="$1"
+#             shift
+#             value="$1"
+#             shift
+#             peps[$key]="$value"
+#         done
+#         num_introns=$1
+#         shift
+#     }
+
+#     function merge_fasta() {
+#         touch "${taskdir}/database.fasta"
+#         for org in "${orgs[@]}"; do
+#             genus=${org%%_*}
+#             cat "${DATA}/${genus}/${org}.dna.toplevel.fasta" >> "${taskdir}/database.fasta"
+#         done
+#     }
+
+#     function merge_gff() {
+#         touch "${taskdir}/database.gff"
+#         for org in "${orgs[@]}"; do
+#             genus=${org%%_*}
+#             cat "${DATA}/${genus}/${org}.genome.gff" >> "${taskdir}/database.gff"
+#         done
+#     }
+
+#     function generate_fasta() {
+#         python3 -m biotp generate_coordinate_all_introns \
+#             "${taskdir}/database.gff" \
+#             "${taskdir}/database_introns.gff"
+#         python3 -m biotp generate_all_introns \
+#             "${taskdir}/database.fasta" \
+#             "${taskdir}/database_introns.gff" \
+#             "${taskdir}/database_introns.fasta"
+#         makeblastdb \
+#             -in "${taskdir}/database_introns.fasta" \
+#             -dbtype nucl \
+#             -hash_index \
+#             -parse_seqids
+
+#         for ((i=1; i<=num_introns; i++)); do
+#             touch "${taskdir}/intron_dna_${i}.fasta"
+#             for pep_key in ${(@k)peps}; do
+#                 tmpfile=$(mktemp)
+#                 blastdbcmd \
+#                     -entry "${pep_key}_intron_${i}" \
+#                     -db "${taskdir}/database_introns.fasta" \
+#                     -out "$tmpfile"
+#                 python3 -m fasp rename_header \
+#                     "$tmpfile" \
+#                     "$tmpfile" \
+#                     "${peps[$pep_key]}" \
+#                     "intron_${i}" 
+#                 cat "$tmpfile" >> "${taskdir}/intron_dna_${i}.fasta"
+#                 rm "$tmpfile"
+#             done
+#         done
+#     }
+
+#     function main() {
+#         parse_args "$@"
+#         make_taskdir
+#         merge_fasta
+#         merge_gff
+#         generate_fasta
+#     }
+
+#     main "$@"
+# }
 
 
