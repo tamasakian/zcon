@@ -143,10 +143,10 @@ EOS
 
 
 
-function construct_introns() {
+function summarize_introns() {
     function usage() {
         cat << EOS
-Usage:  construct_introns <arg1>
+Usage:  summarize_introns <arg1>
 
     arg1: org
 
