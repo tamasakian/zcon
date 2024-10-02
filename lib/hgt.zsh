@@ -186,16 +186,19 @@ EOS
         for ref in sgp grp ogp; do
             cat "${taskdir}/${ref}.cds.all.fasta" >> "${taskdir}/reference.cds.all.fasta"
         done
-        hits_sgp=($(cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u))
-        python3 -m fasp slice_records_by_ids \
+        tmpfile1=$(mktemp)
+        tmpfile2=$(mktemp)
+        cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u > "$tmpfile1"
+        cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u > "$tmpfile2"
+        python3 -m fasp slice_records_by_idfile \
             "${taskdir}/sgp.cds.all.fasta" \
             "${taskdir}/sgp.cds.fasta" \
-            "${hits_sgp[@]}"
-        hits_reference=($(cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u))
-        python3 -m fasp slice_records_by_ids \
+            "$tmpfile1"
+        python3 -m fasp slice_records_by_idfile \
             "${taskdir}/reference.cds.all.fasta" \
             "${taskdir}/reference.cds.fasta" \
-            "${hits_reference[@]}"
+            "$tmpfile2"
+        rm "$tmpfile1" "$tmpfile2"
         python3 -m fasp assign_unique_ids \
             "${taskdir}/reference.cds.fasta" \
             "${taskdir}/reference.cds.unique.fasta" 
