@@ -38,10 +38,7 @@ EOS
     }
 
     function search_orthogroups_with_orgs() {
-        orthofinder \
-            -t 128 \
-            -a 8 \
-            -f "$taskdir"
+        orthofinder -f "$taskdir"
     }
 
     function main() {
