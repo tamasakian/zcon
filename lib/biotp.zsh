@@ -140,13 +140,10 @@ EOS
 }
 
 
-
-
-
 function summarize_introns() {
     function usage() {
         cat << EOS
-Usage:  summarize_introns <arg1>
+Usage: summarize_introns <arg1>
 
     arg1: org
 
