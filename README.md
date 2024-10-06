@@ -31,6 +31,7 @@ git clone https://github.com/tamasakian/zcon.git
 - MUMmer4
 - rapidNJ
 - RAxML Next Generation
+- SonicParanoid2
 - trimAl
 
 ### PythonPackages
