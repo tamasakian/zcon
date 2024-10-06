@@ -51,8 +51,8 @@ EOS
         done
     }
 
-    function sonicparanoid_with_singularity() {
-        singularity exec /usr/local/biotools/s/sonicparanoid:2.0.8--py312h1f1cfbb_0 \
+    function sonicparanoid_with_apptainer() {
+        apptainer exec /usr/local/biotools/s/sonicparanoid:2.0.8--py312h1f1cfbb_0 \
             sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t 16
     }
 
