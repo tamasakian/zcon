@@ -39,7 +39,8 @@
 !/lib/mummer.zsh
 !/lib/orthofinder.zsh
 !/lib/raxml.zsh
+!/lib/sgo.zsh
 !/lib/trimal.zsh
 !/lib/zcon.zsh
 
-!/lib/sgo.zsh
+!/lib/sonicparanoid2.zsh
