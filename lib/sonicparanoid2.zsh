@@ -33,15 +33,21 @@ EOS
     function move_fasta_to_taskdir() {
         mkdir "${taskdir}/input" "${taskdir}/output"
         for org in "${orgs[@]}"; do
-            tmpfile=$(mktemp)
+            tmpfile1=$(mktemp)
+            tmpfile2=$(mktemp)
             genus=${org%%_*}
             python3 -m fasp exclude_isoforms_by_length \
                 "${DATA}/${genus}/${org}.pep.all.fasta" \
-                "$tmpfile" \
+                "$tmpfile1" \
                 "${DATA}/${genus}/${org}.genome.gff" 
             python3 -m fasp exclude_non_nuclear_proteins \
-                "$tmpfile" \
-                "${taskdir}/input/${org}.fasta"
+                "$tmpfile1" \
+                "$tmpfile2"
+            python3 -m fasp prefix_to_sequence_ids \
+                "$tmpfile2" \
+                "${taskdir}/input/${org}.fasta" \
+                "${org}_"
+            rm "$tmpfile1" "$tmpfile2"
         done
     }
 
