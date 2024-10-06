@@ -176,7 +176,7 @@ EOS
                 "$tmpfile1" \
                 "$tmpfile2" \
                 "ogp_${org}_"
-            cat "$tmpfile2" >>"${taskdir}/ogp.cds.all.fasta"
+            cat "$tmpfile2" >> "${taskdir}/ogp.cds.all.fasta"
             rm "$tmpfile1" "$tmpfile2"
         done
     }
@@ -188,8 +188,8 @@ EOS
         done
         tmpfile1=$(mktemp)
         tmpfile2=$(mktemp)
-        cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u > "$tmpfile1"
-        cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u > "$tmpfile2"
+        cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u | xargs -n 1000 > "$tmpfile1"
+        cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u | xargs -n 1000 > "$tmpfile2"
         python3 -m fasp slice_records_by_idfile \
             "${taskdir}/sgp.cds.all.fasta" \
             "${taskdir}/sgp.cds.fasta" \
@@ -212,7 +212,8 @@ EOS
         blastn -outfmt 6 -evalue 10 \
             -db "${taskdir}/database_2" \
             -query "${taskdir}/sgp.cds.fasta" \
-            -out "${taskdir}/hits_2.tsv"
+            -out "${taskdir}/hits_2.tsv" \
+            -max_target_seqs "$max_target_seqs"
     }
 
     function slice_hits_2() {
