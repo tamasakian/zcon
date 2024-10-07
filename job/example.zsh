@@ -13,7 +13,6 @@ function import_libs() {
     source ${LIB}/trimal.zsh
     source ${LIB}/raxml.zsh
     source ${LIB}/jcvi.zsh
-    source ${LIB}/mcscanx.zsh
     source ${LIB}/mummer.zsh
     source ${LIB}/meme.zsh
     source ${LIB}/biotp.zsh
