@@ -51,7 +51,7 @@ EOS
         done
     }
 
-    function sonicparanoid() {
+    function with_sonicparanoid() {
         sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t 16
     }
 
@@ -59,7 +59,7 @@ EOS
         parse_args "$@"
         make_taskdir
         move_fasta_to_taskdir
-        sonicparanoid_with_apptainer
+        with_sonicparanoid_with_apptainer
     }
 
     main "$@"
