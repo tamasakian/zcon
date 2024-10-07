@@ -52,7 +52,7 @@ EOS
     }
 
     function with_sonicparanoid() {
-        sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t 16
+        sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t 32
     }
 
     function main() {
