@@ -46,7 +46,7 @@ EOS
             python3 -m fasp prefix_to_sequence_ids \
                 "$tmpfile2" \
                 "${taskdir}/input/${org}.fasta" \
-                "${org}_"
+                "${org}"
             rm "$tmpfile1" "$tmpfile2"
         done
     }
