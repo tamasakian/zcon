@@ -59,7 +59,7 @@ EOS
         parse_args "$@"
         make_taskdir
         move_fasta_to_taskdir
-        with_sonicparanoid_with_apptainer
+        with_sonicparanoid
     }
 
     main "$@"
