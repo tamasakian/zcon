@@ -52,7 +52,8 @@ EOS
     }
 
     function sonicparanoid_with_apptainer() {
-        apptainer exec --bind ${taskdir}/input,${taskdir}/output /usr/local/biotools/s/sonicparanoid:2.0.8--py312h1f1cfbb_0 \
+        # /usr/local/biotools/s/sonicparanoid:2.0.8--py312h1f1cfbb_0 \
+        apptainer exec --bind ${taskdir}/input,${taskdir}/output /usr/local/biotools/s/sonicparanoid:2.0.7--py310h581d4b6_0 \
             sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output"
     }
 
