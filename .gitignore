@@ -33,6 +33,7 @@
 !/lib/diamond.zsh
 !/lib/function.zsh
 !/lib/hgt.zsh
+!/lib/hmmer.zsh
 !/lib/jcvi.zsh
 !/lib/mafft.zsh
 !/lib/meme.zsh
