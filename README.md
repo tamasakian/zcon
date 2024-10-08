@@ -24,6 +24,7 @@ git clone https://github.com/tamasakian/zcon.git
 - BLAST+
 - datasets
 - DIAMOND
+- HMMER
 - LAST
 - MAFFT
 - MCScanX
