@@ -274,35 +274,6 @@ EOS
     main "$@"
 }
 
-function search_longest_one_to_one_microsynteny() {
-    function usage() {
-        cat <<EOS
-Usage:  search_longest_one_to_one_microsynteny <arg1> <arg2> <arg3> <arg4>
-
-    arg1: genus
-    arg2: ref
-    arg3: qry
-    arg4: feat
-
-EOS
-        exit 1
-    }
-
-    function output_longest_microsynteny() {
-        python3 -m biotp output_longest_one_to_one_microsynteny \
-            "${taskdir}/${ref_us}.bed" \
-            "${taskdir}/${qry_us}.bed" \
-            "${taskdir}/${ref_us}.${qry_us}.i1.blocks" \
-            "${taskdir}/longest_microsynteny.csv"
-    }
-
-    function main() {
-        search_one_to_one_synteny "$@"
-        output_longest_microsynteny
-    }
-
-    main "$@"
-}
 
 function search_longest_one_to_two_microsynteny() {
     function usage() {
