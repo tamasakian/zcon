@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-#### Function libs with GS2 (Matshui et al., 2024)
+#### Function libs with GS2 (Matshui et al., 2019)
 
 function construct_tree() {
     function usage() {
