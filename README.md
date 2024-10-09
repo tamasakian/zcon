@@ -24,12 +24,14 @@ git clone https://github.com/tamasakian/zcon.git
 - BLAST+
 - datasets
 - DIAMOND
+- gs2
 - HMMER
 - LAST
 - MAFFT
 - MCScanX
 - MEME
 - MUMmer4
+- OrthoFinder3
 - rapidNJ
 - RAxML Next Generation
 - SonicParanoid2
