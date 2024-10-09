@@ -30,11 +30,16 @@ EOS
             echo "${i}:${orgs[i]}"
             shift
         done
-        num_peps=$1        
+        num_peps=$1
+        shift
+        typeset -g -A peps
         for ((i=1; i<=num_peps; i++)); do
-            peps[i]="${1// /_}"
-            echo "${i}:${peps[i]}"
+            key="$1"
             shift
+            value="$1"
+            shift
+            peps[$key]="$value"
+            echo "${i}:${peps[i]}"
         done
     }
 
