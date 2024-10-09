@@ -32,6 +32,7 @@
 !/lib/datasets.zsh
 !/lib/diamond.zsh
 !/lib/function.zsh
+!/lib/gs2.zsh
 !/lib/hgt.zsh
 !/lib/hmmer.zsh
 !/lib/jcvi.zsh
