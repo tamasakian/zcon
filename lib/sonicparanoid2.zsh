@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-#### Function libs with SonicParanoid2 (Salvatore et al., 2024)
+#### Function libs with SonicParanoid2 (Cosentino et al., 2024)
 
 function infer_orthology() {
     function usage() {
