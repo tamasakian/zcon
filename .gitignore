@@ -34,7 +34,6 @@
 !/lib/function.zsh
 !/lib/gs2.zsh
 !/lib/hgt.zsh
-!/lib/hmmer.zsh
 !/lib/jcvi.zsh
 !/lib/mafft.zsh
 !/lib/meme.zsh
@@ -45,4 +44,5 @@
 !/lib/trimal.zsh
 !/lib/zcon.zsh
 
+!/lib/hmmer.zsh
 !/lib/sonicparanoid2.zsh
