@@ -2,10 +2,10 @@
 
 #### Function libs with GS2 (Matshui et al., 2019)
 
-function construct_tree() {
+function estimate_gstree() {
     function usage() {
         cat <<EOS
-Usage: construct_tree <arg1> <arg2> <arg3> <arg4> ...
+Usage: estimate_gstree <arg1> <arg2> <arg3> <arg4> ...
 
     arg1: num_orgs
     arg2: org
@@ -39,7 +39,7 @@ EOS
             value="$1"
             shift
             peps[$key]="$value"
-            echo "${i}:${peps[i]}"
+            echo "${i}:${key}:${peps[$key]}"
         done
     }
 
@@ -75,7 +75,7 @@ EOS
         done
     }
 
-    function with_gs2() {
+    function run_gs2() {
         gs2 -e 100 -t 4 -l "${taskdir}/pep.fasta" > "${taskdir}/pep.nwk"
     }
 
@@ -84,7 +84,7 @@ EOS
         make_taskdir
         merge_fasta
         generate_fasta
-        with_gs2
+        run_gs2
     }
 
     main "$@"
