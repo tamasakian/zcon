@@ -23,6 +23,7 @@ EOS
 
     function search_with_hmmscan() {
         hmmscan \
+            -o "${taskdir}/out.txt" \
             --tblout "${taskdir}/tblout.txt" \
             --cpu 4 \
             -E 1e-2 \
