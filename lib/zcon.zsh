@@ -795,6 +795,70 @@ EOS
     main "$@"
 }
 
+function estimate_chloroplast_mltree() {
+    ## This function constructs a multiple sequence alignment of whole genome of chloroplast.
+    function usage() {
+        cat <<EOS
+Usage: construct_chloroplast_dna_msa <arg1> <arg2>
+
+    arg1: num_orgs
+    arg2: orgs
+
+EOS
+    }
+
+    function parse_args() {
+        if [[ $# -lt 4 ]]; then
+            usage
+        fi
+
+        num_orgs=$1
+        shift
+        orgs=()
+        for ((i=1; i<=num_orgs; i++)); do
+            orgs[i]="${1// /_}"
+            shift
+        done
+    }
+
+    function merge_fasta() {
+        touch "${taskdir}/chloroplast.fasta"
+        for org in "${orgs[@]}"; do
+            genus=${org%%_*}
+            tmpfile=$(mktemp)
+            python3 -m fasp rename_header \
+                "${DATA}/${genus}/${org}.dna.chloroplast.fasta" \
+                "$tmpfile" \
+                "$org" ""
+            cat "$tmpfile" >> "${taskdir}/chloroplast.fasta"
+        done
+    }
+
+    function construct_msa() {
+        mafft --auto "${taskdir}/chloroplast.fasta" > "${taskdir}/chloroplast.aln.fasta"
+        mafft --auto --clustalout "${taskdir}/chloroplast.fasta" > "${taskdir}/chloroplast.aln.clustal"
+    }
+
+    function estimate_mltree() {
+        raxml-ng \
+            --msa "${taskdir}/chloroplast.aln.fasta" \
+            --all \
+            --model GTR+G+I \
+            --bs-trees 1000 \
+            --threads 6
+    }
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        merge_fasta
+        construct_msa
+        estimate_mltree
+    }
+
+    main "$@"
+}
+
 
 # function generate_intron_dna_fasta() {
 #     ## This function generates a fasta file of intron of genes.
