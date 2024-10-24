@@ -66,7 +66,7 @@ EOS
         trimal \
             -in "${taskdir}/${cons_genus}.${symbol}.pep.aln" \
             -out "${taskdir}/${cons_genus}.${symbol}.pep.trim.aln" \
-            -automted1
+            -automated1
     }
 
     function main() {
