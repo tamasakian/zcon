@@ -124,107 +124,6 @@ EOS
             "${taskdir}/besthits.tsv"
     }
 
-    function merge_sgp_fasta_2() {
-        touch "${taskdir}/sgp.cds.all.fasta"
-        for org in "${org_sgp[@]}"; do
-            genus=${org%%_*}
-            tmpfile1=$(mktemp)
-            tmpfile2=$(mktemp)
-            python3 -m fasp rename_headers_feature \
-                "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile1" \
-                "protein_id"
-            python3 -m fasp prefix_to_sequence_ids \
-                "$tmpfile1" \
-                "$tmpfile2" \
-                "sgp_${org}_"
-            cat "$tmpfile2" >> "${taskdir}/sgp.cds.all.fasta"
-            rm "$tmpfile1" "$tmpfile2"
-        done
-    }
-
-    function merge_grp_fasta_2() {
-        touch "${taskdir}/grp.cds.all.fasta"
-        for org in "${org_grp[@]}"; do
-            genus=${org%%_*}
-            tmpfile1=$(mktemp)
-            tmpfile2=$(mktemp)
-            python3 -m fasp rename_headers_feature \
-                "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile1" \
-                "protein_id"
-            python3 -m fasp prefix_to_sequence_ids \
-                "$tmpfile1" \
-                "$tmpfile2" \
-                "grp_${org}_"
-            cat "$tmpfile2" >> "${taskdir}/grp.cds.all.fasta"
-            rm "$tmpfile1" "$tmpfile2"
-        done
-    }
-
-    function merge_ogp_fasta_2() {
-        touch "${taskdir}/ogp.cds.all.fasta"
-        for org in "${org_ogp[@]}"; do
-            genus=${org%%_*}
-            tmpfile1=$(mktemp)
-            tmpfile2=$(mktemp)
-            python3 -m fasp rename_headers_feature \
-                "${DATA}/${genus}/${org}.cds.all.fasta" \
-                "$tmpfile1" \
-                "protein_id"
-            python3 -m fasp prefix_to_sequence_ids \
-                "$tmpfile1" \
-                "$tmpfile2" \
-                "ogp_${org}_"
-            cat "$tmpfile2" >> "${taskdir}/ogp.cds.all.fasta"
-            rm "$tmpfile1" "$tmpfile2"
-        done
-    }
-
-    function makeblastdb_reference() {
-        touch "${taskdir}/reference.cds.all.fasta"
-        for ref in sgp grp ogp; do
-            cat "${taskdir}/${ref}.cds.all.fasta" >> "${taskdir}/reference.cds.all.fasta"
-        done
-        tmpfile1=$(mktemp)
-        tmpfile2=$(mktemp)
-        cut -f 1 "${taskdir}/hits_slice.tsv" | sort -u | xargs -n 1000 > "$tmpfile1"
-        cut -f 2 "${taskdir}/hits_slice.tsv" | sort -u | xargs -n 1000 > "$tmpfile2"
-        python3 -m fasp slice_records_by_idfile \
-            "${taskdir}/sgp.cds.all.fasta" \
-            "${taskdir}/sgp.cds.fasta" \
-            "$tmpfile1"
-        python3 -m fasp slice_records_by_idfile \
-            "${taskdir}/reference.cds.all.fasta" \
-            "${taskdir}/reference.cds.fasta" \
-            "$tmpfile2"
-        rm "$tmpfile1" "$tmpfile2"
-        python3 -m fasp assign_unique_ids \
-            "${taskdir}/reference.cds.fasta" \
-            "${taskdir}/reference.cds.unique.fasta" 
-        makeblastdb \
-            -in "${taskdir}/reference.cds.unique.fasta" \
-            -out "${taskdir}/database_2" \
-            -dbtype nucl -hash_index -parse_seqids
-    }
-
-    function blastn_hits() {
-        blastn -outfmt 6 -evalue 10 \
-            -db "${taskdir}/database_2" \
-            -query "${taskdir}/sgp.cds.fasta" \
-            -out "${taskdir}/hits_2.tsv" \
-            -max_target_seqs "$max_target_seqs"
-    }
-
-    function slice_hits_2() {
-        python3 -m biotp slice_hits_by_crossover_group \
-            "${taskdir}/hits_2.tsv" \
-            "${taskdir}/hits_slice_2.tsv"
-        python3 -m biotp output_besthit_for_subgroup \
-            "${taskdir}/hits_2.tsv" \
-            "${taskdir}/besthits_2.tsv"
-    }
-
     function main() {
         parse_args "$@"
         make_taskdir
@@ -234,12 +133,6 @@ EOS
         makedb_reference
         blastp_with_diamond
         slice_hits
-        merge_sgp_fasta_2
-        merge_grp_fasta_2
-        merge_ogp_fasta_2
-        makeblastdb_reference
-        blastn_hits
-        slice_hits_2
     }
 
     main "$@"
