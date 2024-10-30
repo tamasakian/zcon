@@ -5,35 +5,32 @@
 function search_domain() {
     function usage() {
         cat << EOS
-Usage: search_domain <arg1>
+Usage: search_domain <arg1> <arg2>
 
-    arg1: org
+    arg1: org   <- Organism name [e.g., "Arabidopsis thaliana"]
+    arg2: cpu   <- Number of CPU to use [e.g., 2]
 
 EOS
         exit 1
     }
 
     function parse_args() {
-        if [[ $# != 1 ]]; then
+        if [[ $# != 2 ]]; then
             usage
         fi
         org="${1// /_}"
+        cpu=$2
         genus=${org%%_*}
-    }
-
-    function search_with_hmmscan() {
-        hmmscan \
-            -o "${taskdir}/out.txt" \
-            --cpu 5 \
-            -E 1e-2 \
-            "${DATA}/Pfam/Pfam-A.hmm" \
-            "${DATA}/${genus}/${org}.pep.all.fasta"
     }
 
     function main() {
         parse_args "$@"
         make_taskdir
-        search_with_hmmscan
+        hmmscan \
+            -o ${taskdir}/out.txt \
+            --cpu $cpu \
+            ${DATA}/Pfam/Pfam-A.hmm \
+            ${DATA}/${genus}/${org}.pep.all.fasta
     }
 
     main "$@"
@@ -45,33 +42,31 @@ function search_domain_per-sequence_hits() {
         cat << EOS
 Usage: search_domain_per-sequence_hits <arg1>
 
-    arg1: org
+    arg1: org   <- Organism name [e.g., "Arabidopsis thaliana"]
+    arg2: cpu   <- Number of CPU to use [e.g., 2]
 
 EOS
         exit 1
     }
 
     function parse_args() {
-        if [[ $# != 1 ]]; then
+        if [[ $# != 2 ]]; then
             usage
         fi
         org="${1// /_}"
+        cpu=$2
         genus=${org%%_*}
-    }
-
-    function search_with_hmmscan() {
-        hmmscan \
-            --tblout "${taskdir}/tblout.txt" \
-            --cpu 5 \
-            -E 1e-2 \
-            "${DATA}/Pfam/Pfam-A.hmm" \
-            "${DATA}/${genus}/${org}.pep.all.fasta"
     }
 
     function main() {
         parse_args "$@"
         make_taskdir
-        search_with_hmmscan
+        hmmscan \
+            -o ${taskdir}/out.txt \
+            --tblout ${taskdir}/tblout.txt \
+            --cpu $cpu \
+            ${DATA}/Pfam/Pfam-A.hmm \
+            ${DATA}/${genus}/${org}.pep.all.fasta
     }
 
     main "$@"
@@ -83,33 +78,30 @@ function search_domain_per-domain_hits() {
         cat << EOS
 Usage: search_domain_per-domain_hits <arg1>
 
-    arg1: org
+    arg1: org   <- Organism name [e.g., "Arabidopsis thaliana"]
+    arg2: cpu   <- Number of CPU to use [e.g., 2]
 
 EOS
         exit 1
     }
 
     function parse_args() {
-        if [[ $# != 1 ]]; then
+        if [[ $# != 2 ]]; then
             usage
         fi
         org="${1// /_}"
+        cpu=$2
         genus=${org%%_*}
-    }
-
-    function search_with_hmmscan() {
-        hmmscan \
-            --domtblout "${taskdir}/tblout.txt" \
-            --cpu 5 \
-            -E 1e-2 \
-            "${DATA}/Pfam/Pfam-A.hmm" \
-            "${DATA}/${genus}/${org}.pep.all.fasta"
     }
 
     function main() {
         parse_args "$@"
         make_taskdir
-        search_with_hmmscan
+        hmmscan \
+            --domtblout ${taskdir}/domtblout.txt \
+            --cpu $cpu \
+            ${DATA}/Pfam/Pfam-A.hmm \
+            ${DATA}/${genus}/${org}.pep.all.fasta
     }
 
     main "$@"
