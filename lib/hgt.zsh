@@ -2,20 +2,21 @@
 # Last updated: 2024-10-30
 
 #### Function library for HGT research
-# detect_crossover_besthits    <- Detect crossover best-hits
-
+: << 'FUNCTIONS'
+detect_crossover_besthits: Detect crossover besthits.
+FUNCTIONS
 
 function detect_crossover_besthits() {
     function usage() {
         cat <<EOS
 Usage: detect_crossover_besthits <arg1> <arg2> <arg3> <arg4> <arg5> <arg6> 
 
-    arg1: num_sgp   <- Number of organisms in subgroup (e.g., 3)
-    arg2: org_sgp   <- Names  of organisms in subgroup (e.g., "Cuscuta australis" "Cuscuta campestris" ... "Cuscuta europaea")
-    arg3: num_grp   <- Number of organisms in group
-    arg4: org_grp   <- Names  of organisms in group    (e.g., "species1" "species2" ... "speciesN")
-    arg5: num_ogp   <- Number of organisms in outgroup
-    arg6: org_ogp   <- Names  of organisms in outgroup (e.g., "species1" "species2" ... "speciesN")
+    arg1: num_sgp   <- Number of organisms in subgroup. (e.g., 4)
+    arg2: org_sgp   <- Names  of organisms in subgroup. (e.g., "Cuscuta australis" "Cuscuta campestris" ... "Cuscuta europaea")
+    arg3: num_grp   <- Number of organisms in group.    (e.g., 2)
+    arg4: org_grp   <- Names  of organisms in group.    (e.g., "species1" "species2")
+    arg5: num_ogp   <- Number of organisms in outgroup. (e.g., 3)
+    arg6: org_ogp   <- Names  of organisms in outgroup. (e.g., "species1" "species2" "species3")
 
 EOS
         exit 1
