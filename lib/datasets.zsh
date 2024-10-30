@@ -1,13 +1,19 @@
 #!/usr/bin/env zsh
+# Last updated: 2024-10-30
 
 #### Function libs with datasets
+: << 'FUNCTIONS'
+fetch_genome_by_genus:     Download genome data at the genus level from NCBI database.
+redeclare_genome_by_genus: Redeclare the genus level.
+fetch_gene_by_symbol:      Download gene data from NCBI database.
+FUNCTIONS
 
 function fetch_genome_by_genus() {
     function usage() {
         cat <<EOS
 Usage:  fetch_genome_by_genus <arg1>
 
-    arg1: genus
+    arg1: genus     <- Name of genus to download. (e.g., "Cuscuta")
 
 EOS
         exit 1
@@ -21,16 +27,16 @@ EOS
     }
 
     function make_dir() {
-        mkdir -p "${DOWNLOAD}/${genus}"
-        mkdir -p "${DATA}/${genus}"
+        mkdir -p ${DOWNLOAD}/${genus}
+        mkdir -p ${DATA}/${genus}
     } 
 
     function download_genome_by_genus() {
         datasets download genome taxon "$genus" \
             --include genome,protein,cds,gff3 \
             --reference --annotated \
-            --filename "${DOWNLOAD}/${genus}/dataset.zip"
-        unzip -o "${DOWNLOAD}/${genus}/dataset.zip" -d "${DOWNLOAD}/${genus}"
+            --filename ${DOWNLOAD}/${genus}/dataset.zip
+        unzip -o ${DOWNLOAD}/${genus}/dataset.zip -d ${DOWNLOAD}/${genus}
     }
     
     function declare_genome_by_genus() {
@@ -40,8 +46,7 @@ EOS
 
         tmpfile=$(mktemp)
         python3 -m biotp output_acc_org_asm \
-            "${DOWNLOAD}/${genus}/ncbi_dataset/data/assembly_data_report.jsonl" \
-            > "$tmpfile"
+            ${DOWNLOAD}/${genus}/ncbi_dataset/data/assembly_data_report.jsonl > $tmpfile
 
         while IFS=" " read -r i acc org asm; do
             acc_li[i]="$acc" # acc: WGS accession
@@ -50,20 +55,20 @@ EOS
             echo "${i}, acc: ${acc_li[i]}, org: ${org_li[i]}, asm: ${asm_li[i]}"
         done < "$tmpfile"
 
-        rm "$tmpfile"
+        rm $tmpfile
     }
 
-    function send_genome_to_data() {
+    function send_genome_to_datadir() {
         for ((i=1; i<${#org_li[@]}+1; i++)); do
             acc=${acc_li[$i]}; org=${org_li[$i]}; asm=${asm_li[$i]}
-            cp "${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/${acc}_${asm}_genomic.fna" \
-                "${DATA}/${genus}/${org}.dna.toplevel.fasta"
-            cp "${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/cds_from_genomic.fna" \
-                "${DATA}/${genus}/${org}.cds.all.fasta"
-            cp "${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/protein.faa" \
-                "${DATA}/${genus}/${org}.pep.all.fasta"
-            cp "${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/genomic.gff" \
-                "${DATA}/${genus}/${org}.genome.gff"
+            cp ${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/${acc}_${asm}_genomic.fna \
+                ${DATA}/${genus}/${org}.dna.toplevel.fasta
+            cp ${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/cds_from_genomic.fna \
+                ${DATA}/${genus}/${org}.cds.all.fasta
+            cp ${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/protein.faa \
+                ${DATA}/${genus}/${org}.pep.all.fasta
+            cp ${DOWNLOAD}/${genus}/ncbi_dataset/data/${acc}/genomic.gff \
+                ${DATA}/${genus}/${org}.genome.gff
         done
     }
 
@@ -72,7 +77,7 @@ EOS
         make_dir
         download_genome_by_genus
         declare_genome_by_genus
-        send_genome_to_data
+        send_genome_to_datadir
     }
 
     main "$@"
@@ -83,7 +88,7 @@ function redeclare_genome_by_genus() {
         cat <<EOS
 Usage: redeclare_genome_by_genus <arg1>
 
-    arg1: genus
+    arg1: genus     <- Name of genus to redeclare. (e.g., "Cuscuta")
 
 EOS
         exit 1
@@ -107,8 +112,8 @@ EOS
             org_li[i]="$org" 
             asm_li[i]="$asm"
             echo "${i}, acc: ${acc_li[i]}, org: ${org_li[i]}, asm: ${asm_li[i]}"
-        done < "$tmpfile"
-        rm "$tmpfile"
+        done < $tmpfile
+        rm $tmpfile
     }
 
     function main() {
@@ -124,8 +129,8 @@ function fetch_gene_by_symbol() {
         cat <<EOS
 Usage:  fetch_gene_by_symbol <arg1> <arg2>
 
-    arg1: symbol
-    arg2: org
+    arg1: symbol    <- Name of gene symbol to dwonload. (e.g., FT)
+    arg2: org       <- Name of organism.                (e.g., "Arabidopsis thaliana")
 
 EOS
         exit 1
@@ -154,7 +159,7 @@ EOS
         unzip -o "${DOWNLOAD}/${org_us}/${symbol}/dataset.zip" -d "${DOWNLOAD}/${org_us}/${symbol}"
     }
 
-    function send_gene_to_data() {
+    function send_gene_to_datadir() {
         cp "${DOWNLOAD}/${org_us}/${symbol}/ncbi_dataset/data/cds.fna" \
             "${DATA}/${org_us}/${symbol}.cds.fasta"
         cp "${DOWNLOAD}/${org_us}/${symbol}/ncbi_dataset/data/protein.faa" \
@@ -165,7 +170,7 @@ EOS
         parse_args "$@"
         make_dir
         download_gene_by_symbol
-        send_gene_to_data
+        send_gene_to_datadir
     }
 
     main "$@"
