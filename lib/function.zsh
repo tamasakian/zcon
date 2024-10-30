@@ -2,7 +2,10 @@
 # Last updated: 2024-10-30
 
 #### Function libs
-# make_taskir   <- Creates a task directory with a timestamp.
+: << 'FUNCTIONS'
+make_taskir: Creates a task directory with a timestamp.
+FUNCTIONS
+
 
 function make_taskdir() {
     dirname=$(date +"%Y-%m-%d-%H-%M-%S")
