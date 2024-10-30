@@ -1,7 +1,9 @@
 #!/usr/bin/env zsh
+# Last updated: 2024-10-30
 
 #### Function library for HGT research
-# Last updated: 2024-10-30
+# detect_crossover_besthits    <- Detect crossover best-hits
+
 
 function detect_crossover_besthits() {
     function usage() {
