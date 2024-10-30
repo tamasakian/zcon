@@ -2,7 +2,10 @@
 # Last updated: 2024-10-30
 
 #### Function libs with GS2 (Matshui et al., 2019)
-# estimate_gstree   <- Reconstruct gene trees using the Graph Splitting method.
+: << 'FUNCTIONS'
+estimate_gstree: Reconstruct gene trees using the Graph Splitting method.
+FUNCTIONS
+
 
 function estimate_gstree() {
     function usage() {
@@ -23,7 +26,7 @@ EOS
         if [[ $# -lt 8 ]]; then
             usage
         fi
-        
+
         num_orgs=$1; shift
         orgs=()
         for ((i=1; i<=num_orgs; i++)); do
