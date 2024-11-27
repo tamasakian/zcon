@@ -37,6 +37,7 @@
 !/lib/hgt.zsh
 !/lib/jcvi.zsh
 !/lib/mafft.zsh
+!/lib/mcscan.zsh
 !/lib/meme.zsh
 !/lib/mummer.zsh
 !/lib/orthofinder.zsh
