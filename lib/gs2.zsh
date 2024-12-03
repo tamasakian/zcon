@@ -1,11 +1,10 @@
 #!/usr/bin/env zsh
-# Last updated: 2024-10-30
-
-#### Function libs with GS2 (Matshui et al., 2019)
+# Last updated: 2024-12-03
+# Tools: GS2
+# Function libs with GS2 (Matshui et al., 2019)
 : << 'FUNCTIONS'
 estimate_gstree: Reconstruct gene trees using the Graph Splitting method.
 FUNCTIONS
-
 
 function estimate_gstree() {
     function usage() {
@@ -82,11 +81,7 @@ EOS
         make_taskdir
         merge_fasta
         generate_fasta
-        gs2 \
-            -e 100 \
-            -t $threads \
-            -l \
-            ${taskdir}/pep.fasta > ${taskdir}/pep.nwk
+        gs2 -e 100 -t $threads -l ${taskdir}/pep.fasta > ${taskdir}/pep.nwk
     }
 
     main "$@"
