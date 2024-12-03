@@ -1,6 +1,7 @@
 #!/usr/bin/env zsh
-
-## Function libs with MCscan in JCVI.
+# Last updated: 2024-12-03
+# Tools: JCVI LAST
+# Function libs with MCscan in JCVI.
 : << 'FUNCTIONS'
 calculate_syntenic_depth: Calculate syntenic depth
 search_one_to_one_microsynteny: Search 1:1 microsynteny
@@ -9,7 +10,7 @@ FUNCTIONS
 function calculate_syntenic_depth() {
     function usage() {
         cat <<EOS
-Usage:  search_syntenic_depth <arg1> <arg2> <arg3> <arg4>
+Usage:  calculate_syntenic_depth <arg1> <arg2> <arg3> <arg4>
 
     arg1: ref
     arg2: qry
