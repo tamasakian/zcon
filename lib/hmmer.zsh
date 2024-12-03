@@ -1,13 +1,12 @@
 #!/usr/bin/env zsh
-# Last updated: 2024-10-30
-
-#### Function libs with HMMER3
+# Last updated: 2024-12-03
+# Tools: HMMER3
+# Function libs with HMMER3
 : << 'FUNCTIONS'
 search_domain:              Search for protein domains using hmmscan.
 search_domain_per_sequence: Search for protein domains using hmmscan and Output domain hits per-sequence.
 search_domain_per_domain:   Search for protein domains using hmmscan and Output domain hits per-domain.
 FUNCTIONS
-
 
 function search_domain() {
     function usage() {
