@@ -46,18 +46,11 @@ git clone https://github.com/tamasakian/zcon.git
 If you use `venv` to manage packages; 
 
 ```zsh
-## prepare venv
 cd zcon
 python3 -m venv venv
 source venv/bin/activate
-
-## install BIOTP
 pip3 install git+https://github.com/tamasakian/biotp.git
-
-## install FASP
 pip3 install git+https://github.com/tamasakian/fasp.git
-
-## install JCVI
 pip3 install jcvi
 ```
 
