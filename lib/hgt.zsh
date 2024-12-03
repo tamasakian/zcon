@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 # Last updated: 2024-12-03
-# External tools: blast diamond
+# Tools: blast diamond
 
 #### Function library for HGT research
 : << 'FUNCTIONS'
