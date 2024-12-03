@@ -22,26 +22,26 @@ git clone https://github.com/tamasakian/zcon.git
 ### CommandLineTools
 
 - BLAST+
-- datasets
-- DIAMOND
-- gs2
-- HMMER
+- [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)
+- [DIAMOND](https://github.com/bbuchfink/diamond/wiki)
+- [gs2](https://github.com/MotomuMatsui/gs)
+- [HMMER3](https://github.com/EddyRivasLab/hmmer)
 - LAST
-- MAFFT
+- [MAFFT](https://github.com/GSLBiotech/mafft)
 - MCScanX
 - MEME
 - MUMmer4
-- OrthoFinder3
-- rapidNJ
-- RAxML Next Generation
-- SonicParanoid2
+- [OrthoFinder3](https://github.com/davidemms/OrthoFinder)
+- [rapidNJ](https://github.com/somme89/rapidNJ)
+- [RAxML Next Generation](https://github.com/amkozlov/raxml-ng/wiki)
+- [SonicParanoid2](https://gitlab.com/salvo981/sonicparanoid2)
 - trimAl
 
 ### PythonPackages
 
-- BIOTP
-- FASP
-- JCVI
+- [BIOTP](https://github.com/tamasakian/biotp)
+- [FASP](https://github.com/tamasakian/fasp)
+- [JCVI](https://github.com/tanghaibao/jcvi/wiki)
 
 If you use `venv` to manage packages; 
 
