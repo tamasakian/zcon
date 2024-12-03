@@ -1,8 +1,7 @@
 #!/usr/bin/env zsh
 # Last updated: 2024-12-03
-# Tools: blast diamond
-
-#### Function library for HGT research
+# Tools: BLAST DIAMOND
+# Function library for HGT research
 : << 'FUNCTIONS'
 detect_crossover_besthits: Detect crossover besthits.
 FUNCTIONS
