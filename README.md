@@ -52,6 +52,7 @@ source venv/bin/activate
 pip3 install git+https://github.com/tamasakian/biotp.git
 pip3 install git+https://github.com/tamasakian/fasp.git
 pip3 install jcvi
+deactivate
 ```
 
 ## Directory
