@@ -1,7 +1,8 @@
 #!/usr/bin/env zsh
 # Last updated: 2024-12-03
+# Tools: BLAST 2.16.0+
 
-#### Function libs with BLAST+
+#### Function libs with BLAST
 : << 'FUNCTIONS'
 protein_blast:  Protein-Protein BLAST
 FUNCTIONS
