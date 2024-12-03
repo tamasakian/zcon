@@ -1,7 +1,7 @@
 #!/usr/bin/env zsh
-# Last updated: 2024-10-30
-
-#### Function library for Chloroplast genome
+# Last updated: 2024-12-03
+# Tools: MAFFT RAxML-NG
+# Function library for Chloroplast genome
 : << 'FUNCTIONS'
 estimate_mltree_with_whole_chloroplast_genome: Estimate species trees with multiple sequence alignments of whole genome of chloroplast.
 FUNCTIONS
