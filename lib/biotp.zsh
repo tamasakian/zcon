@@ -1,6 +1,52 @@
 #!/usr/bin/env zsh
+# Last updated: 2024-12-04
+# Tools: BIOTP FASP
+# Function libs with BIOTP
+: << 'FUNCTIONS'
+generate_all_introns_fasta: Generate an intron FASTA file. 
+FUNCTIONS
 
-#### Function libs with biotp
+function generate_all_introns_fasta() {
+    function usage() {
+        cat << EOS
+Usage: generate_all_introns_fasta <arg1>
+
+    arg1: org
+
+EOS
+        exit 1
+    }
+
+    function parse_args() {
+        if [[ $# != 1 ]]; then
+            usage
+        fi
+        org="${1// /_}"
+        genus=${org%%_*}
+    }
+
+    function generate_gff() {
+        python3 -m biotp generate_introns \
+            "${DATA}/${genus}/${org}.genome.gff" \
+            "${taskdir}/${org}.intron.gff"
+    }
+
+    function generate_fasta() {
+        python3 -m fasp generate_introns \
+            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
+            "${taskdir}/${org}.intron.all.fasta" \
+            "${taskdir}/${org}.intron.gff"
+    }   
+
+    function main() {
+        parse_args "$@"
+        make_taskdir
+        generate_gff
+        generate_fasta
+    }
+
+    main "$@"
+}
 
 function construct_all_introns() {
     function usage() {
@@ -188,50 +234,6 @@ EOS
 
     main "$@"
 }
-
-
-function generate_all_introns_fasta() {
-    function usage() {
-        cat << EOS
-Usage: generate_all_introns_fasta <arg1>
-
-    arg1: org
-
-EOS
-        exit 1
-    }
-
-    function parse_args() {
-        if [[ $# != 1 ]]; then
-            usage
-        fi
-        org="${1// /_}"
-        genus=${org%%_*}
-    }
-
-    function generate_gff() {
-        python3 -m biotp generate_introns \
-            "${DATA}/${genus}/${org}.genome.gff" \
-            "${taskdir}/${org}.intron.gff"
-    }
-
-    function generate_fasta() {
-        python3 -m fasp generate_introns \
-            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
-            "${taskdir}/${org}.intron.all.fasta" \
-            "${taskdir}/${org}.intron.gff"
-    }   
-
-    function main() {
-        parse_args "$@"
-        make_taskdir
-        generate_gff
-        generate_fasta
-    }
-
-    main "$@"
-}
-
 
 function generate_all_upstream_reagions_fasta() {
     function usage() {
