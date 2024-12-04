@@ -4,6 +4,7 @@
 # Function libs with BIOTP
 : << 'FUNCTIONS'
 generate_all_introns_fasta: Generate an intron FASTA file. 
+calculate_all_introns_lengths: Calculate lengths from the generated intron FASTA file. 
 FUNCTIONS
 
 function generate_all_introns_fasta() {
@@ -48,93 +49,34 @@ EOS
     main "$@"
 }
 
-function construct_all_introns() {
-    function usage() {
+function calculate_all_introns_lengths() {
+    function usage_2() {
         cat << EOS
-Usage:  construct_all_introns <arg1> <arg2>
+Usage: calculate_all_introns_lengths <arg1>
 
-    arg1: genus
-    arg2: org
+    arg1: org
 
 EOS
         exit 1
     }
 
-    function parse_args() {
-        if [[ $# != 2 ]]; then
-            usage
-        fi
-        genus="$1"
-        org="${2/ /_}"
-    }
-
-    function generate_introns_gff() {
-        python3 -m biotp generate_coordinate_all_introns \
-            "${DATA}/${genus}/${org}.genome.gff" \
-            "${taskdir}/${org}.genome.intron.gff"
-    }
-
-    function generate_introns_fasta() {
-        python3 -m biotp generate_all_introns \
-            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
-            "${taskdir}/${org}.genome.intron.gff" \
-            "${taskdir}/${org}.intron.all.fasta"
-    }
-
-    function main() {
-        parse_args "$@"
-        make_taskdir
-        generate_introns_gff
-        generate_introns_fasta
-    }
-
-    main "$@"
-}
-
-
-
-
-function construct_all_introns_by_genus() {
-    function usage() {
-        cat << EOS
-Usage:  construct_all_introns_by_genus <arg1>
-
-    arg1: genus
-
-EOS
-        exit 1
-    }
-
-    function parse_args() {
+    function parse_args_2() {
         if [[ $# != 1 ]]; then
-            usage
+            usage_2
         fi
-        genus="$1"
+        org="${1// /_}"
+        genus=${org%%_*}
     }
 
-    function generate_introns_gff() {
-        for org in ${org_li[*]}; do
-            python3 -m biotp generate_coordinate_all_introns \
-                "${DATA}/${genus}/${org}.genome.gff" \
-                "${taskdir}/${org}.genome.intron.gff"
-        done
-    }
-
-    function generate_introns_fasta() {
-        for org in ${org_li[*]}; do
-            python3 -m biotp generate_all_introns \
-                "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
-                "${taskdir}/${org}.genome.intron.gff" \
-                "${taskdir}/${org}.intron.all.fasta"
-        done
+    function calculate_lengths() {
+        python3 -m fasp measure_lengths \
+            "${taskdir}/${org}.intron.all.fasta" \
+            "${taskdir}/${org}.intron.length.tsv"
     }
 
     function main() {
-        parse_args "$@"
-        make_taskdir
-        redeclare_genome_by_genus "$genus"
-        generate_introns_gff
-        generate_introns_fasta
+        generate_all_introns_fasta "$@"
+        calculate_lengths
     }
 
     main "$@"
@@ -183,56 +125,6 @@ EOS
 
     main "$@"
 
-}
-
-
-function summarize_introns() {
-    function usage() {
-        cat << EOS
-Usage: summarize_introns <arg1>
-
-    arg1: org
-
-EOS
-        exit 1
-    }
-
-    function parse_args() {
-        if [[ $# != 1 ]]; then
-            usage
-        fi
-        org="${1// /_}"
-        genus=${org%%_*}
-    }
-
-    function generate_gff() {
-        python3 -m biotp generate_introns \
-            "${DATA}/${genus}/${org}.genome.gff" \
-            "${taskdir}/${org}.intron.gff"
-    }
-
-    function generate_fasta() {
-        python3 -m fasp generate_introns \
-            "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
-            "${taskdir}/${org}.intron.all.fasta" \
-            "${taskdir}/${org}.intron.gff"
-    }
-
-    function measure_lengths() {
-        python3 -m fasp measure_lengths \
-            "${taskdir}/${org}.intron.all.fasta" \
-            "${taskdir}/${org}.intron.length.tsv"
-    }
-
-    function main() {
-        parse_args "$@"
-        make_taskdir
-        generate_gff
-        generate_fasta
-        measure_lengths
-    }
-
-    main "$@"
 }
 
 function generate_all_upstream_reagions_fasta() {
