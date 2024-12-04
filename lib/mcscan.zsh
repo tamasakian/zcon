@@ -3,8 +3,8 @@
 # Tools: JCVI LAST
 # Function libs with MCscan in JCVI.
 : << 'FUNCTIONS'
-calculate_syntenic_depth: Calculate syntenic depth
-search_one_to_one_microsynteny: Search 1:1 microsynteny
+calculate_syntenic_depth: Calculate syntenic depth.
+search_one_to_one_microsynteny: Search 1:1 microsynteny.
 FUNCTIONS
 
 function calculate_syntenic_depth() {
