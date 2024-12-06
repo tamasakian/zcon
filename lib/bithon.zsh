@@ -3,7 +3,7 @@
 # Tools: bithon
 # Function libs with bithon
 : << 'FUNCTIONS'
-build_longest_isoform: Build the longest isoform from NCBI genome data using bithon.
+build_longest_isoform: Build the longest isoform from NCBI/ENSEMBL genome data using bithon.
 FUNCTIONS
 
 function build_longest_isoform() {
@@ -34,8 +34,15 @@ EOS
     function build_fasta() {
         mkdir "${taskdir}/input"
         for sp_name in "${sp_names[@]}"; do
-            gn_name=${sp_name%%_*}
+            ## ENSEMBL
+            if [[ -e "${DATA}/ENSEMBL/${sp_name}/pep.fasta" ]]; then
+                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}/pep.fasta" -o "${taskdir}/input/${sp_name}.pep.fasta"
+                continue
+            fi
+            
+            ## NCBI
             mkdir "${taskdir}/input/${sp_name}"
+            gn_name=${sp_name%%_*}
             cp "${DATA}/${gn_name}/${sp_name}.pep.all.fasta" "${taskdir}/input/${sp_name}/pep.fasta"
             cp "${DATA}/${gn_name}/${sp_name}.cds.all.fasta" "${taskdir}/input/${sp_name}/cds.fasta"
             bithon gls -i "${taskdir}/input/${sp_name}" -o "${taskdir}/input/${sp_name}"
