@@ -35,11 +35,11 @@ EOS
         mkdir "${taskdir}/input"
         for sp_name in "${sp_names[@]}"; do
             ## ENSEMBL
-            if [[ -e "${DATA}/ENSEMBL/${sp_name}/pep.fasta" ]]; then
-                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}/pep.fasta" -o "${taskdir}/input/${sp_name}.pep.fasta"
+            if [[ -e "${DATA}/Ensembl/${sp_name}.pep.all.fasta" ]]; then
+                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.pep.fasta" --header transcript
                 continue
             fi
-            
+
             ## NCBI
             mkdir "${taskdir}/input/${sp_name}"
             gn_name=${sp_name%%_*}
