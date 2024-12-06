@@ -85,13 +85,12 @@ EOS
 function make_dict_pepid_by_gff() {
     function usage() {
         cat << EOS
-Usage: make_dict_pepid_by_gff <arg1> <arg2> <arg3> <arg4> <arg5>
+Usage: make_dict_pepid_by_gff <arg1> <arg2> <arg3> <arg4>
     
-    arg1: genus
-    arg2: org
-    arg3: kind
-    arg4: key
-    arg5: pattern
+    arg1: sp_name
+    arg2: gf_kind
+    arg3: gf_attr
+    arg4: pattern
 
 EOS
         exit 1
@@ -101,20 +100,20 @@ EOS
         if [[ $# != 5 ]]; then
             usage
         fi
-        genus="$1"
-        org="${2/ /_}"
-        kind="$3"
-        key="$4"
+        sp_name="$1"
+        gn_name="${2/ /_}"
+        gf_kind="$3"
+        gf_attr="$4"
         pattern="$5"
     }
 
     function make_dict() {
         python3 -m biotp make_dict_pepid \
-            "${DATA}/${genus}/${org}.genome.gff" \
-            "${taskdir}/${org}.dict_pepid.csv" \
-            "$kind" \
-            "$key" \
-            "$pattern"
+            "${DATA}/${gn_name}/${sp_name}.genome.gff" \
+            "${taskdir}/${sp_name}.pepid.csv" \
+            "${gf_kind}" \
+            "${gf_attr}" \
+            "${pattern}"
     }
 
     function main() {
@@ -127,10 +126,10 @@ EOS
 
 }
 
-function generate_all_upstream_reagions_fasta() {
+function generate_all_upstream_regions_fasta() {
     function usage() {
         cat << EOS
-Usage: generate_all_upstream_reagions_fasta <arg1> <arg2>
+Usage: generate_all_upstream_regions_fasta <arg1> <arg2>
 
     arg1: org
     arg2: bp
