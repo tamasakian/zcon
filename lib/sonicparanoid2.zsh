@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
-# Last updated: 2024-12-04
-# Tools: SonicParanoid2
+# Last updated: 2024-12-06
+# Tools: SonicParanoid2 bithon
 # Function libs with SonicParanoid2
 : << 'FUNCTIONS'
 identify_ortholog_groups: Identify ortholog groups.
@@ -11,8 +11,8 @@ function identify_ortholog_groups() {
         cat <<EOS
 Usage: identify_ortholog_groups <arg1> <arg2> <arg3>
 
-    arg1: num       <- Number of organisms.      (e.g., 3)
-    arg2: org       <- Names  of organisms.      (e.g., "Cuscuta australis" "Cuscuta campestris" "Cuscuta europaea")
+    arg1: sp_num    <- Number of species.        (e.g., 3)
+    arg2: sp_name   <- Names  of species.        (e.g., "Cuscuta australis" "Cuscuta campestris" "Cuscuta europaea")
     arg3: threads   <- Number of threads to use. (e.g., 2)
 
 EOS
@@ -20,35 +20,46 @@ EOS
     }
 
     function parse_args() {
-        if [[ $# -lt 5 ]]; then
+        if [[ $# -lt 3 ]]; then
             usage
         fi
-        num=$1; shift
-        orgs=()
-        for ((i=1; i<=num; i++)); do
-            orgs[i]="${1// /_}"; shift
+        sp_num=$1
+        sp_names=()
+        echo "Species:${sp_num}"
+        for ((i=1; i<=sp_num; i++)); do
+            sp_names[i]="${2// /_}"; shift
+            echo "${i}:${sp_names[i]}"
         done
-        threads=$1; shift
+        threads=$2
     }
 
-    function move_fasta_to_taskdir() {
-        mkdir "${taskdir}/input" "${taskdir}/output"
-        for org in "${orgs[@]}"; do
-            genus=${org%%_*}
-            tmpfile1=$(mktemp)
-            tmpfile2=$(mktemp)
-            python3 -m fasp exclude_isoforms_by_length \
-                "${DATA}/${genus}/${org}.pep.all.fasta" \
-                "$tmpfile1" \
-                "${DATA}/${genus}/${org}.genome.gff" 
-            python3 -m fasp exclude_non_nuclear_proteins \
-                "$tmpfile1" \
-                "$tmpfile2"
+    function build_fasta() {
+        mkdir "${taskdir}/input"
+        for sp_name in "${sp_names[@]}"; do
+            ## ENSEMBL
+            if [[ -e "${DATA}/Ensembl/${sp_name}.pep.all.fasta" ]]; then
+                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.pep.fasta" --header transcript
+                continue
+            fi
+
+            ## NCBI
+            mkdir "${taskdir}/input/${sp_name}"
+            gn_name=${sp_name%%_*}
+            cp "${DATA}/${gn_name}/${sp_name}.pep.all.fasta" "${taskdir}/input/${sp_name}/pep.fasta"
+            cp "${DATA}/${gn_name}/${sp_name}.cds.all.fasta" "${taskdir}/input/${sp_name}/cds.fasta"
+            bithon gls -i "${taskdir}/input/${sp_name}" -o "${taskdir}/input/${sp_name}"
+            cp "${taskdir}/input/${sp_name}/longest.pep.fasta" "${taskdir}/input/${sp_name}.pep.fasta"
+            rm -r "${taskdir}/input/${sp_name}"
+        done
+    }
+
+    function setup_fasta_() {
+        mkdir "${taskdir}/output"
+        for sp_name in "${sp_names[@]}"; do
             python3 -m fasp prefix_to_sequence_ids \
-                "$tmpfile2" \
-                "${taskdir}/input/${org}.fasta" \
-                "${org}"
-            rm "$tmpfile1" "$tmpfile2"
+                "${taskdir}/input/${sp_name}.pep.fasta" \
+                "${taskdir}/input/${sp_name}.pep.fasta" \
+                "${sp_name}"
         done
     }
 
@@ -56,6 +67,8 @@ EOS
         parse_args "$@"
         make_taskdir
         move_fasta_to_taskdir
+        build_fasta
+        setup_fasta
         sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t $threads
     }
 
