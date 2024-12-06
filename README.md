@@ -21,21 +21,21 @@ git clone https://github.com/tamasakian/zcon.git
 
 ### CommandLineTools
 
-- BLAST+
+- [BLAST+](https://blast.ncbi.nlm.nih.gov/doc/blast-help/downloadblastdata.html)
 - [datasets](https://www.ncbi.nlm.nih.gov/datasets/docs/v2/download-and-install/)
 - [DIAMOND](https://github.com/bbuchfink/diamond/wiki)
 - [gs2](https://github.com/MotomuMatsui/gs)
 - [HMMER3](https://github.com/EddyRivasLab/hmmer)
-- LAST
+- [LAST](https://gitlab.com/mcfrith/last)
 - [MAFFT](https://github.com/GSLBiotech/mafft)
-- MCScanX
-- MEME
-- MUMmer4
+- [MCScanX](https://github.com/wyp1125/MCScanX)
+- [MEME](https://github.com/cinquin/MEME)
+- [MUMmer4](https://github.com/mummer4/mummer)
 - [OrthoFinder3](https://github.com/davidemms/OrthoFinder)
 - [rapidNJ](https://github.com/somme89/rapidNJ)
 - [RAxML Next Generation](https://github.com/amkozlov/raxml-ng/wiki)
 - [SonicParanoid2](https://gitlab.com/salvo981/sonicparanoid2)
-- trimAl
+- [trimAl](https://github.com/inab/trimal)
 
 ### PythonPackages
 
