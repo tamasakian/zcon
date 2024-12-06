@@ -28,6 +28,7 @@
 
 !/lib/
 !/lib/biotp.zsh
+!/lib/bithon.zsh
 !/lib/blast.zsh
 !/lib/chloroplast.zsh
 !/lib/datasets.zsh
