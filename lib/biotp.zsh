@@ -173,10 +173,10 @@ EOS
 }
 
 
-function generate_all_downstream_reagions_fasta() {
+function generate_all_downstream_regions_fasta() {
     function usage() {
         cat << EOS
-Usage: generate_all_downstream_reagions_fasta <arg1> <arg2>
+Usage: generate_all_downstream_regions_fasta <arg1> <arg2>
 
     arg1: org
     arg2: bp
