@@ -6,6 +6,7 @@
 search_domain:              Search for protein domains using hmmscan.
 search_domain_per_sequence: Search for protein domains using hmmscan and Output domain hits per-sequence.
 search_domain_per_domain:   Search for protein domains using hmmscan and Output domain hits per-domain.
+search_pfam_domain:         Search sequences against the Pfam database. 
 FUNCTIONS
 
 function search_domain() {
@@ -115,10 +116,10 @@ EOS
 }
 
 
-function search_sequences_against_Pfam_database() {
+function search_pfam_domain() {
     function usage() {
         cat << EOS
-Usage: search_sequences_against_Pfam_database <arg1> <arg2> <arg3>
+Usage: search_pfam_domain <arg1> <arg2> <arg3>
 
     arg1: sp_num    <- Number of species.   (e.g., 2)
     arg2: sp_name   <- Name of species.     (e.g., "Cuscuta australis" "Cuscuta campestris")
