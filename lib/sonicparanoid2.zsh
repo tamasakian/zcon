@@ -38,7 +38,7 @@ EOS
         for sp_name in "${sp_names[@]}"; do
             ## ENSEMBL
             if [[ -e "${DATA}/Ensembl/${sp_name}.pep.all.fasta" ]]; then
-                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.pep.fasta" --header transcript
+                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.fasta" --header transcript
                 continue
             fi
 
@@ -48,17 +48,16 @@ EOS
             cp "${DATA}/${gn_name}/${sp_name}.pep.all.fasta" "${taskdir}/input/${sp_name}/pep.fasta"
             cp "${DATA}/${gn_name}/${sp_name}.cds.all.fasta" "${taskdir}/input/${sp_name}/cds.fasta"
             bithon gls -i "${taskdir}/input/${sp_name}" -o "${taskdir}/input/${sp_name}"
-            cp "${taskdir}/input/${sp_name}/longest.pep.fasta" "${taskdir}/input/${sp_name}.pep.fasta"
+            cp "${taskdir}/input/${sp_name}/longest.pep.fasta" "${taskdir}/input/${sp_name}.fasta"
             rm -r "${taskdir}/input/${sp_name}"
         done
     }
 
-    function setup_fasta_() {
-        mkdir "${taskdir}/output"
+    function setup_fasta() {
         for sp_name in "${sp_names[@]}"; do
             python3 -m fasp prefix_to_sequence_ids \
-                "${taskdir}/input/${sp_name}.pep.fasta" \
-                "${taskdir}/input/${sp_name}.pep.fasta" \
+                "${taskdir}/input/${sp_name}.fasta" \
+                "${taskdir}/input/${sp_name}.fasta" \
                 "${sp_name}"
         done
     }
@@ -69,6 +68,7 @@ EOS
         move_fasta_to_taskdir
         build_fasta
         setup_fasta
+        mkdir "${taskdir}/output"
         sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t $threads
     }
 
