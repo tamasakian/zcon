@@ -54,11 +54,12 @@ EOS
     function setup_fasta() {
         touch "${taskdir}/input.fasta"
         for sp_name in "${sp_names[@]}"; do
+            tmpfile=$(mktemp)
             python3 -m fasp prefix_to_sequence_ids \
                 "${taskdir}/input/${sp_name}.fasta" \
-                "${taskdir}/input/${sp_name}.fasta" \
-                "${sp_name}"
-            cat "${taskdir}/input/${sp_name}.fasta" >> "${taskdir}/input.fasta"
+                "$tmpfile" \
+                "$sp_name"
+            cat "$tmpfile" >> "${taskdir}/input.fasta"
         done
     }
 
