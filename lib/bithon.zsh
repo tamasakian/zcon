@@ -156,4 +156,6 @@ EOS
             -query "${taskdir}/input.fasta" \
             -out "${taskdir}/hits.txt"
     }
+
+    main "$@"
 }
