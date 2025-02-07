@@ -3,8 +3,8 @@
 # Tools: BIOTP FASP
 # Function libs with BIOTP
 : << 'FUNCTIONS'
-generate_all_introns_fasta: Generate an intron FASTA file. 
-calculate_all_introns_lengths: Calculate lengths from the generated intron FASTA file. 
+generate_all_introns_fasta: Generate an intron FASTA file.
+calculate_all_introns_lengths: Calculate lengths from the generated intron FASTA file.
 FUNCTIONS
 
 function generate_all_introns_fasta() {
@@ -37,7 +37,7 @@ EOS
             "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
             "${taskdir}/${org}.intron.all.fasta" \
             "${taskdir}/${org}.intron.gff"
-    }   
+    }
 
     function main() {
         parse_args "$@"
@@ -86,7 +86,7 @@ function make_dict_pepid_by_gff() {
     function usage() {
         cat << EOS
 Usage: make_dict_pepid_by_gff <arg1> <arg2> <arg3> <arg4>
-    
+
     arg1: sp_name
     arg2: gf_kind
     arg3: gf_attr
@@ -159,7 +159,7 @@ EOS
             "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
             "${taskdir}/${org}.upstream_${bp}.all.fasta" \
             "${taskdir}/${org}.upstream_${bp}.gff"
-    }   
+    }
 
     function main() {
         parse_args "$@"
@@ -205,7 +205,7 @@ EOS
             "${DATA}/${genus}/${org}.dna.toplevel.fasta" \
             "${taskdir}/${org}.downstream_${bp}.all.fasta" \
             "${taskdir}/${org}.downstream_${bp}.gff"
-    }   
+    }
 
     function main() {
         parse_args "$@"
