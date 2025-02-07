@@ -72,7 +72,7 @@ EOS
             genus=${qry%%_*}
             cat "${DATA}/${genus}/${qry}.pep.all.fasta" >> "${taskdir}/qry.all.fasta"
         done
-        
+
         makeblastdb \
             -in "${taskdir}/qry.all.fasta" \
             -dbtype prot \
@@ -107,7 +107,7 @@ EOS
             cat "$tmpfile" >> "${taskdir}/ref.all.fasta"
             rm "$tmpfile"
         done
-        
+
         makeblastdb \
             -in "${taskdir}/ref.all.fasta" \
             -dbtype prot \
@@ -201,7 +201,7 @@ EOS
                 "protein_id"
             cat "$tmpfile" >> "${taskdir}/qry.all.fasta"
         done
-        
+
         makeblastdb \
             -in "${taskdir}/qry.all.fasta" \
             -dbtype nucl \
@@ -240,7 +240,7 @@ EOS
             cat "$tmpfile" >> "${taskdir}/ref.all.fasta"
             rm "$tmpfile"
         done
-        
+
         makeblastdb \
             -in "${taskdir}/ref.all.fasta" \
             -dbtype nucl \
@@ -263,4 +263,3 @@ EOS
 
     main "$@"
 }
-
