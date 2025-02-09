@@ -128,7 +128,7 @@ EOS
         touch "${taskdir}/input.fasta"
         for sp_name in "${sp_names[@]}"; do
             sp_part=(${(s:_:)sp_name})
-            sp="${sp_part[1]:1}${sp_part[2]}"
+            sp="${sp_part[1]:0:1}${sp_part[2]}"
             tmpfile=$(mktemp)
             python3 -m fasp prefix_to_sequence_ids \
                 "${taskdir}/input/${sp_name}.fasta" \
