@@ -236,7 +236,7 @@ EOS
         setup_fasta
         diamond blastp \
             --db ${taskdir}/database \
-            --query ${taskdir}/database.fasta \
+            --query ${taskdir}/input.fasta \
             --out ${taskdir}/hits.txt \
             --max-target-seqs $max_ts
     }
