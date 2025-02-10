@@ -110,7 +110,7 @@ EOS
         for sp_name in "${sp_names[@]}"; do
             ## ENSEMBL
             if [[ -e "${DATA}/Ensembl/${sp_name}.pep.all.fasta" ]]; then
-                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.fasta" --header transcript
+                bithon ensgls -i "${DATA}/Ensembl/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.fasta" --header transcript
                 continue
             fi
 
@@ -196,7 +196,7 @@ EOS
         for sp_name in "${sp_names[@]}"; do
             ## ENSEMBL
             if [[ -e "${DATA}/Ensembl/${sp_name}.pep.all.fasta" ]]; then
-                bithon ensgls -i "${DATA}/ENSEMBL/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.fasta" --header transcript
+                bithon ensgls -i "${DATA}/Ensembl/${sp_name}.pep.all.fasta" -o "${taskdir}/input/${sp_name}.fasta" --header transcript
                 continue
             fi
 
