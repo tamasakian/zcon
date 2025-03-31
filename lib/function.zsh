@@ -3,7 +3,7 @@
 
 #### Function libs
 : << 'FUNCTIONS'
-make_taskir: Creates a task directory with a timestamp.
+make_taskdir: Creates a task directory with a timestamp.
 FUNCTIONS
 
 
