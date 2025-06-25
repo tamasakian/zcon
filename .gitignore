@@ -43,6 +43,7 @@
 !/lib/orthofinder.zsh
 !/lib/raxml.zsh
 !/lib/trimal.zsh
+!/liv/trivium.zsh
 !/lib/zcon.zsh
 
 !/lib/hmmer.zsh
