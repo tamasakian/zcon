@@ -62,7 +62,7 @@ run_sonicparanoid(){
     local sp_names=("${@}")
     local threads=4
     local taskdir="${TASKFILE}/sonicparanoid_$(date +"%Y-%m-%d-%H-%M-%S")"
-    mkdir -p "${taskdir}/input" "${taskdir}/output"
+    mkdir -p "${taskdir}/fasta" "${taskdir}/input" "${taskdir}/output"
 
     ## --- FASTA Preparation ---
     for sp in "${sp_names[@]}"; do
@@ -72,18 +72,18 @@ run_sonicparanoid(){
         local cds="${DATA}/${gn}/${sp_fs}.cds.all.fasta"
 
         if [[ -e "${DATA}/Ensembl/${sp_fs}.pep.all.fasta" ]]; then
-            bithon ensgls -i "${DATA}/Ensembl/${sp_fs}.pep.all.fasta" -o "${taskdir}/input/${sp_fs}.fasta" --header transcript
+            bithon ensgls -i "${DATA}/Ensembl/${sp_fs}.pep.all.fasta" -o "${taskdir}/fasta/${sp_fs}.fasta" --header transcript
         else
-            mkdir -p "${taskdir}/input/${sp_fs}"
-            cp "${pep}" "${taskdir}/input/${sp_fs}/pep.fasta"
-            cp "${cds}" "${taskdir}/input/${sp_fs}/cds.fasta"
-            bithon gls -i "${taskdir}/input/${sp_fs}" -o "${taskdir}/input/${sp_fs}"
-            cp "${taskdir}/input/${sp_fs}/longest.pep.fasta" "${taskdir}/input/${sp_fs}.fasta"
-            rm -r "${taskdir}/input/${sp_fs}"
+            mkdir -p "${taskdir}/fasta/${sp_fs}"
+            cp "${pep}" "${taskdir}/fasta/${sp_fs}/pep.fasta"
+            cp "${cds}" "${taskdir}/fasta/${sp_fs}/cds.fasta"
+            bithon gls -i "${taskdir}/fasta/${sp_fs}" -o "${taskdir}/fasta/${sp_fs}"
+            cp "${taskdir}/fasta/${sp_fs}/longest.pep.fasta" "${taskdir}/fasta/${sp_fs}.fasta"
+            rm -r "${taskdir}/fasta/${sp_fs}"
         fi
 
         python3 -m fasp prefix_to_sequence_ids \
-            "${taskdir}/input/${sp_fs}.fasta" \
+            "${taskdir}/fasta/${sp_fs}.fasta" \
             "${taskdir}/input/${sp_fs}.fasta" \
             "${sp_fs}"
     done
