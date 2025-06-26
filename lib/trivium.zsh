@@ -127,7 +127,7 @@ function run_mcscanx() {
 
         python3 -m g2bp fasta4mcscanx "${taskdir}/gff/${sp_fs}.gff" "${taskdir}/bed/${sp_fs}.bed" "${taskdir}/fasta/${sp_fs}.fasta"
         python3 -m fasp prefix_to_sequence_ids "${taskdir}/fasta/${sp_fs}.fasta" "${taskdir}/fasta_prefix/${sp_fs}.fasta" "${sp_fs}"
-        awk -v sp="${sp_fs}_" 'BEGIN{OFS=FS="\t"} {$4=sp $4; print}' "${taskdir}/bed/${sp_fs}.bed" > "${taskdir}/bed_prefix/${sp_fs}.bed"
+        awk -v sp="${sp_fs}_" 'BEGIN{OFS=FS="\t"} {$2=sp $2; print}' "${taskdir}/bed/${sp_fs}.bed" > "${taskdir}/bed_prefix/${sp_fs}.bed"
 
     done
 
