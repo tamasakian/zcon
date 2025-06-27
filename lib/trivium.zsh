@@ -158,6 +158,7 @@ function run_mcscanx() {
             MCScanX "${pairdir}/${sp1_fs}__${sp2_fs}" \
                 -b 2 \
                 -e 1e-5
+            cp "${pairdir}/${sp1_fs}__${sp2_fs}.collinearity" "${taskdir}/output/${gn1}__${gn2}.collinearity"
         done
     done
 }
