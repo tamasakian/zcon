@@ -6,6 +6,7 @@
 run_pfam: Run Pfam domain search on a given FASTA file.
 run_sonicparanoid: Run SonicParanoid2 on a given directory of FASTA files.
 run_mcscanx: Run MCScanX for collinearity analysis between pairs of species.
+run_trivium: Run various comparative genomics analyses including Pfam, SonicParanoid2, and MCScanX.
 FUNCTIONS
 
 function run_pfam() {
@@ -161,5 +162,25 @@ function run_mcscanx() {
             cp "${pairdir}/${sp1_fs}__${sp2_fs}.collinearity" "${taskdir}/output/${gn1}__${gn2}.collinearity"
         done
     done
+}
+
+run_trivium() {
+    if [[ $# != 1 ]]; then
+        echo "Usage: run_trivium <taskname>" >&2
+        return 1
+    fi
+    local taskname="$1"
+    local taskdir="${TASKFILE}/${taskname}/trivium_$(date +"%Y-%m-%d-%H-%M-%S")"
+    mkdir -p "${taskdir}/output"
+
+    if [[ -d "${TASKFILE}/${taskname}/input" ]]; then
+        for input_file in "${TASKFILE}/${taskname}/input/"*.collinearity; do
+            if [[ -f "$input_file" ]]; then
+                local base_name="${input_file##*/}"
+                local output_file="${taskdir}/output/${base_name%.collinearity}.txt"
+                perl ${HOME}/bin/MCScanX-1.0.0/downstream_analyses/group_syntenic_genes.pl -i "$input_file" -o "$output_file"
+            fi
+        done
+    fi
 }
 
