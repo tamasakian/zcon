@@ -1,12 +1,12 @@
 #!/usr/bin/env zsh
-# Last updated: 2025-06-26
+# Last updated: 2025-07-01
 # Tools: HMMER3 SonicParanoid2 MCScanX bithon
 
 : << 'FUNCTIONS'
 run_pfam: Run Pfam domain search on a given FASTA file.
 run_sonicparanoid: Run SonicParanoid2 on a given directory of FASTA files.
 run_mcscanx: Run MCScanX for collinearity analysis between pairs of species.
-run_trivium: Run various comparative genomics analyses including Pfam, SonicParanoid2, and MCScanX.
+run_mcscanx_da: Run various comparative genomics analyses including Pfam, SonicParanoid2, and MCScanX.
 FUNCTIONS
 
 function run_pfam() {
@@ -164,9 +164,9 @@ function run_mcscanx() {
     done
 }
 
-run_trivium() {
+run_mcscanx_da() {
     if [[ $# != 1 ]]; then
-        echo "Usage: run_trivium <taskname>" >&2
+        echo "Usage: run_mcscanx_da <taskname>" >&2
         return 1
     fi
     local taskname="$1"
