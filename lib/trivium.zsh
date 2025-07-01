@@ -7,6 +7,7 @@ run_pfam: Run Pfam domain search on a given FASTA file.
 run_sonicparanoid: Run SonicParanoid2 on a given directory of FASTA files.
 run_mcscanx: Run MCScanX for collinearity analysis between pairs of species.
 run_mcscanx_da: Run MCScanX downstream analyses on collinearity files.
+construct_family_tree_mso_spo: Construct a family tree from MSO and SPO files.
 FUNCTIONS
 
 function run_pfam() {
@@ -164,13 +165,13 @@ function run_mcscanx() {
     done
 }
 
-run_mcscanx_da() {
+function run_mcscanx_da() {
     if [[ $# != 1 ]]; then
         echo "Usage: run_mcscanx_da <taskname>" >&2
         return 1
     fi
     local taskname="$1"
-    local taskdir="${TASKFILE}/${taskname}/trivium_$(date +"%Y-%m-%d-%H-%M-%S")"
+    local taskdir="${TASKFILE}/${taskname}/mcscanx_da_$(date +"%Y-%m-%d-%H-%M-%S")"
     mkdir -p "${taskdir}/output"
 
     if [[ -d "${TASKFILE}/${taskname}/input" ]]; then
@@ -184,3 +185,39 @@ run_mcscanx_da() {
     fi
 }
 
+function construct_family_tree_mso_spo(){
+    if [[ $# -lt 3 ]]; then
+        echo "Usage: construct_family_tree_mso_spo <taskname> <family> <PF_entry> ..." >&2
+        return 1
+    fi
+
+    local taskname="$1"
+    local family="$2"
+    local PF_entry=("${@:3}")
+    local taskdir="${TASKFILE}/${taskname}/family_${family}_$(date +"%Y-%m-%d-%H-%M-%S")"
+    mkdir -p "${taskdir}/output"
+
+    python3 -m biotp extract_protein_by_entry \
+        "${TASKFILE}/${taskname}/input/domtblout.txt" \
+        "${taskdir}/output/${family}.txt" \
+        "${PF_entry[@]}"
+
+    if [[ ! -s "${taskdir}/output/${family}.txt" ]]; then
+        echo "No entries found for family ${family} with PF entries: ${PF_entry[*]}. Please check the input file or PF entries." >&2
+        return 1
+    fi
+
+    python3 -m fasp seq_extractor \
+        "${TASKFILE}/${taskname}/input/input.fasta" \
+        "${taskdir}/output/${family}.fasta" \
+        "${taskdir}/output/${family}.txt"
+
+    gs2 -e 100 -l "${taskdir}/output/${family}.fasta" > "${taskdir}/output/${family}.tree"
+
+    python3 -m biotp annotate_tree_mso_spo \
+        "${taskdir}/output/${family}.tree" \
+        "${taskdir}/output/${family}_annotated.tree" \
+        "${TASKFILE}/${taskname}/input/syngraph.txt" \
+        "${TASKFILE}/${taskname}/input/flat.ortholog_groups.tsv"
+
+}
