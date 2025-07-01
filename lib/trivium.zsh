@@ -6,7 +6,7 @@
 run_pfam: Run Pfam domain search on a given FASTA file.
 run_sonicparanoid: Run SonicParanoid2 on a given directory of FASTA files.
 run_mcscanx: Run MCScanX for collinearity analysis between pairs of species.
-run_mcscanx_da: Run various comparative genomics analyses including Pfam, SonicParanoid2, and MCScanX.
+run_mcscanx_da: Run MCScanX downstream analyses on collinearity files.
 FUNCTIONS
 
 function run_pfam() {
