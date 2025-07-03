@@ -49,8 +49,25 @@ function run_pfam() {
     ## --- Pfam Domain Search ---
     hmmscan \
         -o "${taskdir}/output/hmmscan.txt" \
-        --domtblout "${taskdir}/output/domtblout.txt" \
+        --domtblout "${taskdir}/output/domtblout_ga.txt" \
         --cpu "$threads" \
+        --cut_ga \
+        "${DATA}/Pfam/Pfam-A.hmm" \
+        "${taskdir}/input/input.fasta"
+
+    hmmscan \
+        -o "${taskdir}/output/hmmscan.txt" \
+        --domtblout "${taskdir}/output/domtblout_nc.txt" \
+        --cpu "$threads" \
+        --cut_nc \
+        "${DATA}/Pfam/Pfam-A.hmm" \
+        "${taskdir}/input/input.fasta"
+
+    hmmscan \
+        -o "${taskdir}/output/hmmscan.txt" \
+        --domtblout "${taskdir}/output/domtblout_tc.txt" \
+        --cpu "$threads" \
+        --cut_tc \
         "${DATA}/Pfam/Pfam-A.hmm" \
         "${taskdir}/input/input.fasta"
 }
