@@ -111,6 +111,51 @@ run_sonicparanoid(){
     sonicparanoid -i "${taskdir}/input" -o "${taskdir}/output" -t "$threads"
 }
 
+function run_fastoma() {
+    if [[ $# -lt 2 ]]; then
+        echo "Usage: run_fastoma <threads> <taskname>" >&2
+        return 1
+    fi
+
+    local threads="$1"
+    shift
+    if [[ ! "$threads" =~ ^[0-9]+$ ]]; then
+        echo "[ERROR] Threads must be a positive integer." >&2
+        return 1
+    fi
+
+    local taskname="$2"
+    local taskdir="${TASKFILE}/${taskname}/fastoma_$(date +"%Y-%m-%d-%H-%M-%S")"
+
+    mkdir -p "${taskdir}/input" "${taskdir}/input/proteome" "${taskdir}/output"
+
+    if [[ -d "${TASKFILE}/${taskname}/input" ]]; then
+        for input_file in "${TASKFILE}/${taskname}/input/"*.fasta; do
+            if [[ -f "$input_file" ]]; then
+                local base_name="${input_file##*/}"
+                local proteome_file="${taskdir}/input/proteome/${base_name}.fa"
+                cp "$input_file" "$proteome_file"
+            fi
+        done
+    fi
+
+    if [[ ! -f "${TASKFILE}/${taskname}/input/species_tree.nwk" ]]; then
+        echo "[ERROR] Species tree file not found in input directory." >&2
+        return 1
+    fi
+    local species_tree="${taskdir}/input/species_tree.nwk"
+    cp "${TASKFILE}/${taskname}/input/species_tree.nwk" "$species_tree"
+
+    ## --- Run FastOMA ---
+    nextflow run dessimozlab/FastOMA \
+        -profile conda \
+        --input "${taskdir}/input" \
+        --output "${taskdir}/output" \
+        --omamer_db "${DATA}/OMAmer/LUCA.h5" \
+        -process.cpus="$threads" \
+        -process.memory='128 GB' \
+}
+
 function run_mcscanx() {
     if [[ $# -lt 2 ]]; then
         echo "Usage: run_mcscanx <sp_name1> <sp_name2> ..." >&2
